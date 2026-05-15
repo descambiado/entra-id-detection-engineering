@@ -35,30 +35,48 @@ This detection fires only when the consented scope includes a permission from th
 ### KQL (Microsoft Sentinel)
 
 ```kql
-let starttime = todatetime('{{StartTimeISO}}');
-let endtime   = todatetime('{{EndTimeISO}}');
-let highRiskScopes = dynamic([
-    "Mail.ReadWrite",
-    "Files.ReadWrite.All",
-    "Mail.Send",
-    "MailboxSettings.ReadWrite",
-    "full_access_as_app",
-    "EWS.AccessAsUser.All",
+let timeframe = 1d;
+let lookback = 90d;
+let HighRiskScopes = dynamic([
+    "RoleManagement.ReadWrite.Directory",
+    "Application.ReadWrite.All",
+    "AppRoleAssignment.ReadWrite.All",
     "Directory.ReadWrite.All",
-    "RoleManagement.ReadWrite.Directory"
+    "User.ReadWrite.All",
+    "Mail.ReadWrite",
+    "Mail.Send",
+    "Files.ReadWrite.All",
+    "full_access_as_app"
 ]);
+let KnownAppSet = toscalar(
+    AuditLogs
+    | where TimeGenerated >= ago(timeframe + lookback) and TimeGenerated < ago(timeframe)
+    | where OperationName =~ "Consent to application"
+    | extend AppId = tostring(TargetResources[0].id)
+    | summarize make_set(AppId)
+);
 AuditLogs
-| where TimeGenerated between (starttime .. endtime)
+| where TimeGenerated >= ago(timeframe)
 | where OperationName =~ "Consent to application"
 | where Result =~ "success"
-| extend UserUpn     = tolower(tostring(TargetResources[0].userPrincipalName))
-| extend AppName     = tostring(TargetResources[0].displayName)
-| extend ConsentType = tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[0].newValue)
-| extend Scopes      = tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].newValue)
-| where Scopes has_any (highRiskScopes)
-| extend AccountName      = tostring(split(UserUpn, "@")[0])
-| extend AccountUPNSuffix = tostring(split(UserUpn, "@")[1])
-| project TimeGenerated, UserUpn, AccountName, AccountUPNSuffix, AppName, ConsentType, Scopes, CorrelationId
+| extend AppId    = tostring(TargetResources[0].id)
+| extend AppName  = tostring(TargetResources[0].displayName)
+| extend ActorUpn = tostring(InitiatedBy.user.userPrincipalName)
+| extend ActorApp = tostring(InitiatedBy.app.displayName)
+| extend Actor    = iff(isnotempty(ActorUpn), ActorUpn, ActorApp)
+| extend ActorIp  = iff(
+      isnotempty(tostring(InitiatedBy.user.ipAddress)),
+      tostring(InitiatedBy.user.ipAddress),
+      tostring(InitiatedBy.app.ipAddress))
+| mv-expand ModProp = TargetResources[0].modifiedProperties
+| where tostring(ModProp.displayName) =~ "ConsentContext.Permissions"
+| extend GrantedPermissions = tostring(ModProp.newValue)
+| where GrantedPermissions has_any (HighRiskScopes)
+| extend IsNewApp = not(set_has_element(KnownAppSet, AppId))
+| extend AccountName      = iff(Actor has "@", tostring(split(Actor, "@")[0]), Actor)
+| extend AccountUPNSuffix = iff(Actor has "@", tostring(split(Actor, "@")[1]), "")
+| project TimeGenerated, AppName, AppId, GrantedPermissions, Actor,
+          AccountName, AccountUPNSuffix, ActorIp, IsNewApp, CorrelationId
 | sort by TimeGenerated desc
 ```
 
