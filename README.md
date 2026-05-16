@@ -18,13 +18,16 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 
 | Technique | Name | Detections |
 |-----------|------|------------|
-| T1528 | Steal Application Access Token | [OAuth consent to high-risk permission](detections/credential-access/oauth-consent-high-risk-permission.md) |
+| T1528 | Steal Application Access Token | [OAuth consent to high-risk permission](detections/credential-access/oauth-consent-high-risk-permission.md), [High-privilege app role assigned to SP](detections/persistence/application-app-role-assigned-high-privilege.md) |
+| T1539 | Steal Web Session Cookie | [Anomalous token issuance after AiTM](detections/credential-access/anomalous-token-issuance-aitm.md) |
+| T1550 | Use Alternate Authentication Material | [Anomalous token issuance after AiTM](detections/credential-access/anomalous-token-issuance-aitm.md) |
 | T1556.006 | Modify Authentication Process: Multi-Factor Authentication | [MFA registration from unseen IP](detections/persistence/mfa-registration-from-unseen-ip.md), [Admin MFA registration for user](detections/persistence/admin-mfa-registration-for-user.md), [Authentication methods policy modified](detections/persistence/authentication-methods-policy-modified.md) |
 | T1098 | Account Manipulation | [Cross-tenant access setting modified](detections/persistence/cross-tenant-access-setting-modified.md), [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md) |
-| T1098.003 | Account Manipulation: Additional Cloud Credentials | [Guest user added to privileged role](detections/privilege-escalation/guest-user-added-to-privileged-role.md), [Bulk role assignments in short window](detections/privilege-escalation/bulk-role-assignments.md) |
-| T1078.004 | Valid Accounts: Cloud Accounts | [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md), [PIM activation outside business hours](detections/defense-evasion/pim-activation-outside-business-hours.md) |
+| T1098.001 | Additional Cloud Credentials | [SP credential addition by non-historical actor](detections/persistence/service-principal-credential-addition-nonhistorical.md) |
+| T1098.003 | Additional Cloud Roles | [Guest user added to privileged role](detections/privilege-escalation/guest-user-added-to-privileged-role.md), [Bulk role assignments in short window](detections/privilege-escalation/bulk-role-assignments.md), [Directory role assigned outside PIM](detections/privilege-escalation/directory-role-assigned-outside-pim.md), [High-privilege app role assigned to SP](detections/persistence/application-app-role-assigned-high-privilege.md) |
+| T1078.004 | Valid Accounts: Cloud Accounts | [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md), [PIM activation outside business hours](detections/defense-evasion/pim-activation-outside-business-hours.md), [Workload identity sign-in from new country](detections/credential-access/workload-identity-sign-in-new-country.md) |
 | T1562.001 | Impair Defenses: Disable or Modify Tools | [Named location deleted or modified](detections/defense-evasion/named-location-deleted-or-modified.md), [Conditional Access policy disabled or deleted](detections/defense-evasion/conditional-access-policy-disabled.md) |
-| T1484.002 | Domain Trust Modification: Trust Modification | [Federated domain added to tenant](detections/defense-evasion/federated-domain-added.md) |
+| T1484.002 | Domain Trust Modification | [Federated domain added to tenant](detections/defense-evasion/federated-domain-added.md) |
 
 ---
 
@@ -34,33 +37,38 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 
 | Detection | Platform | Severity | PR |
 |-----------|----------|----------|----|
-| [OAuth consent to high-risk permission](detections/credential-access/oauth-consent-high-risk-permission.md) | Sentinel + SIGMA | High | [Azure-Sentinel](https://github.com/Azure/Azure-Sentinel/pull/14240), [SigmaHQ](https://github.com/SigmaHQ/sigma/pull/6012) |
+| [OAuth consent to high-risk permission](detections/credential-access/oauth-consent-high-risk-permission.md) | Sentinel + SIGMA | High | [Azure-Sentinel#14276](https://github.com/Azure/Azure-Sentinel/pull/14276), [SigmaHQ#6012](https://github.com/SigmaHQ/sigma/pull/6012) |
+| [Anomalous token issuance after AiTM](detections/credential-access/anomalous-token-issuance-aitm.md) | Sentinel | High | [Azure-Sentinel#14276](https://github.com/Azure/Azure-Sentinel/pull/14276) |
+| [Workload identity sign-in from new country](detections/credential-access/workload-identity-sign-in-new-country.md) | Sentinel | Medium | [Azure-Sentinel#14281](https://github.com/Azure/Azure-Sentinel/pull/14281) |
 
 ### Persistence
 
 | Detection | Platform | Severity | PR |
 |-----------|----------|----------|----|
-| [MFA registration from unseen IP](detections/persistence/mfa-registration-from-unseen-ip.md) | Sentinel | Medium | [Azure-Sentinel](https://github.com/Azure/Azure-Sentinel/pull/14262) |
-| [Admin registered MFA method for another user](detections/persistence/admin-mfa-registration-for-user.md) | Sentinel + SIGMA | High | [Azure-Sentinel](https://github.com/Azure/Azure-Sentinel/pull/14262), [SigmaHQ](https://github.com/SigmaHQ/sigma/pull/6012) |
-| [Authentication methods policy modified](detections/persistence/authentication-methods-policy-modified.md) | SIGMA | High | [SigmaHQ](https://github.com/SigmaHQ/sigma/pull/6012) |
-| [Cross-tenant access setting modified](detections/persistence/cross-tenant-access-setting-modified.md) | SIGMA | High | [SigmaHQ](https://github.com/SigmaHQ/sigma/pull/6012) |
+| [MFA registration from unseen IP](detections/persistence/mfa-registration-from-unseen-ip.md) | Sentinel | Medium | [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) |
+| [Admin registered MFA method for another user](detections/persistence/admin-mfa-registration-for-user.md) | Sentinel + SIGMA | High | [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262), [SigmaHQ#6012](https://github.com/SigmaHQ/sigma/pull/6012) |
+| [Authentication methods policy modified](detections/persistence/authentication-methods-policy-modified.md) | SIGMA | High | [SigmaHQ#6012](https://github.com/SigmaHQ/sigma/pull/6012) |
+| [Cross-tenant access setting modified](detections/persistence/cross-tenant-access-setting-modified.md) | SIGMA | High | [SigmaHQ#6012](https://github.com/SigmaHQ/sigma/pull/6012) |
+| [SP credential addition by non-historical actor](detections/persistence/service-principal-credential-addition-nonhistorical.md) | Sentinel + SIGMA | Medium | [Azure-Sentinel#14276](https://github.com/Azure/Azure-Sentinel/pull/14276), [SigmaHQ#6016](https://github.com/SigmaHQ/sigma/pull/6016) |
+| [High-privilege app role assigned to service principal](detections/persistence/application-app-role-assigned-high-privilege.md) | Sentinel + SIGMA | High | [Azure-Sentinel#14281](https://github.com/Azure/Azure-Sentinel/pull/14281), [SigmaHQ#6016](https://github.com/SigmaHQ/sigma/pull/6016) |
 
 ### Privilege Escalation
 
 | Detection | Platform | Severity | PR |
 |-----------|----------|----------|----|
-| [Guest user added to privileged Entra ID role](detections/privilege-escalation/guest-user-added-to-privileged-role.md) | Sentinel + SIGMA | High | [Azure-Sentinel](https://github.com/Azure/Azure-Sentinel/pull/14240), [SigmaHQ](https://github.com/SigmaHQ/sigma/pull/6012) |
-| [Bulk role assignments in short window](detections/privilege-escalation/bulk-role-assignments.md) | Sentinel | Medium | [Azure-Sentinel](https://github.com/Azure/Azure-Sentinel/pull/14262) |
-| [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md) | Sentinel | High | [Azure-Sentinel](https://github.com/Azure/Azure-Sentinel/pull/14262) |
+| [Guest user added to privileged Entra ID role](detections/privilege-escalation/guest-user-added-to-privileged-role.md) | Sentinel + SIGMA | High | [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240), [SigmaHQ#6012](https://github.com/SigmaHQ/sigma/pull/6012) |
+| [Bulk role assignments in short window](detections/privilege-escalation/bulk-role-assignments.md) | Sentinel | Medium | [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) |
+| [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md) | Sentinel | High | [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) |
+| [Directory role assigned outside PIM workflow](detections/privilege-escalation/directory-role-assigned-outside-pim.md) | Sentinel | High | [Azure-Sentinel#14281](https://github.com/Azure/Azure-Sentinel/pull/14281) |
 
 ### Defense Evasion
 
 | Detection | Platform | Severity | PR |
 |-----------|----------|----------|----|
-| [Named location deleted or modified](detections/defense-evasion/named-location-deleted-or-modified.md) | Sentinel + SIGMA | Medium | [Azure-Sentinel](https://github.com/Azure/Azure-Sentinel/pull/14240), [SigmaHQ](https://github.com/SigmaHQ/sigma/pull/6012) |
-| [Conditional Access policy disabled or deleted](detections/defense-evasion/conditional-access-policy-disabled.md) | Sentinel | High | [Azure-Sentinel](https://github.com/Azure/Azure-Sentinel/pull/14240) |
-| [PIM role activation outside business hours](detections/defense-evasion/pim-activation-outside-business-hours.md) | Sentinel | Medium | [Azure-Sentinel](https://github.com/Azure/Azure-Sentinel/pull/14240) |
-| [Federated domain added to tenant (Golden SAML)](detections/defense-evasion/federated-domain-added.md) | Sentinel | High | [Azure-Sentinel](https://github.com/Azure/Azure-Sentinel/pull/14240) |
+| [Named location deleted or modified](detections/defense-evasion/named-location-deleted-or-modified.md) | Sentinel + SIGMA | Medium | [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240), [SigmaHQ#6012](https://github.com/SigmaHQ/sigma/pull/6012) |
+| [Conditional Access policy disabled or deleted](detections/defense-evasion/conditional-access-policy-disabled.md) | Sentinel | High | [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) |
+| [PIM role activation outside business hours](detections/defense-evasion/pim-activation-outside-business-hours.md) | Sentinel | Medium | [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) |
+| [Federated domain added to tenant (Golden SAML)](detections/defense-evasion/federated-domain-added.md) | Sentinel | High | [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) |
 
 ---
 
@@ -91,12 +99,15 @@ All content has been contributed upstream. The following PRs are merged or in re
 | [#14239](https://github.com/Azure/Azure-Sentinel/pull/14239) | Entra ID identity and application threat hunting pack (5 queries) | Merged May 13, 2026 |
 | [#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) | Defense weakening and privilege abuse hunting pack (3 queries) | In review |
 | [#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) | Cross-source correlation hunting pack (3 queries) | In review |
+| [#14276](https://github.com/Azure/Azure-Sentinel/pull/14276) | Token abuse and OAuth consent hunting pack (3 queries) | In review |
+| [#14281](https://github.com/Azure/Azure-Sentinel/pull/14281) | Workload identity and privileged role hunting pack (3 queries) | In review |
 
 ### SigmaHQ/sigma
 
 | PR | Description | Status |
 |----|-------------|--------|
 | [#6012](https://github.com/SigmaHQ/sigma/pull/6012) | Azure Entra ID identity attack detections (6 rules) | In review |
+| [#6016](https://github.com/SigmaHQ/sigma/pull/6016) | SP credential addition and admin consent high-risk permission (2 rules) | In review |
 
 ---
 
@@ -111,6 +122,6 @@ All content in this repo has been contributed upstream to the community:
 
 ## Author
 
-**descambiado** - SOC Analyst L1 at Capgemini, targeting SIEM Engineer. Writing detections for Entra ID identity attacks contributed to Azure-Sentinel and SigmaHQ.
+**descambiado** - SOC Analyst and SIEM Engineer. Writing detections for Entra ID identity attacks, contributed to Azure-Sentinel and SigmaHQ.
 
 [github.com/descambiado](https://github.com/descambiado)
