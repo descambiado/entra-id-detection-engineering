@@ -48,13 +48,12 @@ let HighRiskScopes = dynamic([
     "Files.ReadWrite.All",
     "full_access_as_app"
 ]);
-let KnownAppSet = toscalar(
+let KnownApps =
     AuditLogs
     | where TimeGenerated >= ago(timeframe + lookback) and TimeGenerated < ago(timeframe)
     | where OperationName =~ "Consent to application"
     | extend AppId = tostring(TargetResources[0].id)
-    | summarize make_set(AppId)
-);
+    | distinct AppId;
 AuditLogs
 | where TimeGenerated >= ago(timeframe)
 | where OperationName =~ "Consent to application"
@@ -72,11 +71,11 @@ AuditLogs
 | where tostring(ModProp.displayName) =~ "ConsentContext.Permissions"
 | extend GrantedPermissions = tostring(ModProp.newValue)
 | where GrantedPermissions has_any (HighRiskScopes)
-| extend IsNewApp = not(set_has_element(KnownAppSet, AppId))
+| join kind=leftanti KnownApps on AppId
 | extend AccountName      = iff(Actor has "@", tostring(split(Actor, "@")[0]), Actor)
 | extend AccountUPNSuffix = iff(Actor has "@", tostring(split(Actor, "@")[1]), "")
 | project TimeGenerated, AppName, AppId, GrantedPermissions, Actor,
-          AccountName, AccountUPNSuffix, ActorIp, IsNewApp, CorrelationId
+          AccountName, AccountUPNSuffix, ActorIp, CorrelationId
 | sort by TimeGenerated desc
 ```
 

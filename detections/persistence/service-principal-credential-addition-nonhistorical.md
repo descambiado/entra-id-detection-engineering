@@ -30,7 +30,7 @@ This detection baselines the initiating identity over 90 days. DormantServicePri
 ```kql
 let timeframe = 1d;
 let lookback = 90d;
-let KnownActorSet = toscalar(
+let KnownActors =
     AuditLogs
     | where TimeGenerated >= ago(timeframe + lookback) and TimeGenerated < ago(timeframe)
     | where OperationName in~ (
@@ -41,8 +41,7 @@ let KnownActorSet = toscalar(
     | extend ActorApp = tostring(InitiatedBy.app.displayName)
     | extend Actor    = iff(isnotempty(ActorUpn), ActorUpn, ActorApp)
     | where isnotempty(Actor)
-    | summarize make_set(Actor)
-);
+    | distinct Actor;
 AuditLogs
 | where TimeGenerated >= ago(timeframe)
 | where OperationName in~ (
@@ -61,7 +60,8 @@ AuditLogs
 | extend CredType = iff(
       TargetResources[0].modifiedProperties has "KeyCredentials",
       "Certificate", "Password")
-| where not(set_has_element(KnownActorSet, Actor))
+| where isnotempty(Actor)
+| join kind=leftanti KnownActors on Actor
 | extend AccountName      = iff(Actor has "@", tostring(split(Actor, "@")[0]), Actor)
 | extend AccountUPNSuffix = iff(Actor has "@", tostring(split(Actor, "@")[1]), "")
 | project TimeGenerated, Actor, AccountName, AccountUPNSuffix, ActorIp,

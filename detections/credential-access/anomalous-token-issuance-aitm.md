@@ -14,9 +14,8 @@ The pattern this detection targets:
 
 1. User authenticates interactively from IP `1.2.3.4` (ASN: Telefonica, for example)
 2. Within 10 minutes, a non-interactive token is issued for the same user from IP `5.6.7.8` (ASN: DigitalOcean, Hetzner, or similar VPS provider)
-3. No registered device is associated with the non-interactive sign-in
 
-This is the fingerprint of a stolen session token being replayed, not a legitimate roaming scenario. Legitimate roaming (airplane mode, VPN toggle) rarely produces a different autonomous system in under 10 minutes.
+This IP and ASN divergence within a 10-minute window is the fingerprint of a stolen session token being replayed, not a legitimate roaming scenario. Legitimate roaming (airplane mode, VPN toggle) rarely produces a different autonomous system in under 10 minutes.
 
 ## Why standard detections miss it
 
@@ -41,13 +40,14 @@ let InteractiveSessions =
     | where TimeGenerated >= ago(timeframe)
     | where ResultType == 0
     | where isnotempty(UserPrincipalName)
+    | summarize arg_max(TimeGenerated, IPAddress, AutonomousSystemNumber, CorrelationId)
+        by UserUpn = tolower(UserPrincipalName)
     | project
-        InteractiveTime   = TimeGenerated,
-        UserUpn           = tolower(UserPrincipalName),
-        InteractiveIp     = IPAddress,
-        InteractiveAsn    = AutonomousSystemNumber,
-        InteractiveDevice = tostring(DeviceDetail.deviceId),
-        SessionId         = CorrelationId;
+        UserUpn,
+        InteractiveTime = TimeGenerated,
+        InteractiveIp   = IPAddress,
+        InteractiveAsn  = AutonomousSystemNumber,
+        SessionId       = CorrelationId;
 AADNonInteractiveUserSignInLogs
 | where TimeGenerated >= ago(timeframe)
 | where ResultType == 0
@@ -57,8 +57,6 @@ AADNonInteractiveUserSignInLogs
 | where TimeGenerated between (InteractiveTime .. (InteractiveTime + correlationWindow))
 | where IPAddress != InteractiveIp
 | where AutonomousSystemNumber != InteractiveAsn
-| where isempty(tostring(DeviceDetail.deviceId))
-      or tostring(DeviceDetail.deviceId) != InteractiveDevice
 | extend AccountName      = tostring(split(UserUpn, "@")[0])
 | extend AccountUPNSuffix = tostring(split(UserUpn, "@")[1])
 | project
