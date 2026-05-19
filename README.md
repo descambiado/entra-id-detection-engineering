@@ -98,7 +98,7 @@ All content has been contributed upstream. The following PRs are merged or in re
 | [#14213](https://github.com/Azure/Azure-Sentinel/pull/14213) | Service principal credential addition by rarely observed actor | Merged May 7, 2026 |
 | [#14239](https://github.com/Azure/Azure-Sentinel/pull/14239) | Entra ID identity and application threat hunting pack (5 queries) | Merged May 13, 2026 |
 | [#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) | Defense weakening and privilege abuse hunting pack (3 queries) | In review |
-| [#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) | Cross-source correlation hunting pack (3 queries) | In review |
+| [#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) | Cross-source correlation hunting pack (3 queries) | Merged May 19, 2026 |
 | [#14276](https://github.com/Azure/Azure-Sentinel/pull/14276) | Token abuse and OAuth consent hunting pack (3 queries) | In review |
 | [#14281](https://github.com/Azure/Azure-Sentinel/pull/14281) | Workload identity and privileged role hunting pack (3 queries) | In review |
 
