@@ -113,6 +113,7 @@ All content has been contributed upstream. The following PRs are merged or in re
 |----|-------------|--------|
 | [#6012](https://github.com/SigmaHQ/sigma/pull/6012) | Azure Entra ID identity attack detections (6 rules) | In review |
 | [#6016](https://github.com/SigmaHQ/sigma/pull/6016) | SP credential addition and admin consent high-risk permission (2 rules) | In review |
+| [#6024](https://github.com/SigmaHQ/sigma/pull/6024) | Temporary Access Pass creation detection | In review |
 
 ---
 
