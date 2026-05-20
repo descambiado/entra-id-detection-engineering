@@ -42,7 +42,7 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 | [Anomalous token issuance after AiTM](detections/credential-access/anomalous-token-issuance-aitm.md) | Sentinel | High | [Azure-Sentinel#14276](https://github.com/Azure/Azure-Sentinel/pull/14276) |
 | [Workload identity sign-in from new country](detections/credential-access/workload-identity-sign-in-new-country.md) | Sentinel | Medium | [Azure-Sentinel#14281](https://github.com/Azure/Azure-Sentinel/pull/14281) |
 | [SP credential addition followed by immediate sign-in](detections/credential-access/service-principal-credential-then-signin.md) | Sentinel | High | [Azure-Sentinel#14299](https://github.com/Azure/Azure-Sentinel/pull/14299) |
-| [OAuth application redirect URI modified](detections/credential-access/application-redirect-uri-modified.md) | Sentinel | High | [Azure-Sentinel#14307](https://github.com/Azure/Azure-Sentinel/pull/14307) |
+| [OAuth application redirect URI modified](detections/credential-access/application-redirect-uri-modified.md) | Sentinel + SIGMA | Medium | [Azure-Sentinel#14307](https://github.com/Azure/Azure-Sentinel/pull/14307), [SigmaHQ#6025](https://github.com/SigmaHQ/sigma/pull/6025) |
 
 ### Persistence
 
@@ -56,8 +56,8 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 | [High-privilege app role assigned to service principal](detections/persistence/application-app-role-assigned-high-privilege.md) | Sentinel + SIGMA | High | [Azure-Sentinel#14281](https://github.com/Azure/Azure-Sentinel/pull/14281), [SigmaHQ#6016](https://github.com/SigmaHQ/sigma/pull/6016) |
 | [Privileged role assigned to newly created account](detections/persistence/privileged-role-assigned-to-new-account.md) | Sentinel | High | [Azure-Sentinel#14299](https://github.com/Azure/Azure-Sentinel/pull/14299) |
 | [Temporary Access Pass created for user](detections/persistence/temporary-access-pass-created.md) | Sentinel | High | [Azure-Sentinel#14299](https://github.com/Azure/Azure-Sentinel/pull/14299) |
-| [Guest user type changed to member](detections/persistence/guest-user-type-changed-to-member.md) | Sentinel | Medium | [Azure-Sentinel#14307](https://github.com/Azure/Azure-Sentinel/pull/14307) |
-| [Service principal owner added](detections/persistence/service-principal-owner-added.md) | Sentinel | High | [Azure-Sentinel#14307](https://github.com/Azure/Azure-Sentinel/pull/14307) |
+| [Guest user type changed to member](detections/persistence/guest-user-type-changed-to-member.md) | Sentinel + SIGMA | Medium | [Azure-Sentinel#14307](https://github.com/Azure/Azure-Sentinel/pull/14307), [SigmaHQ#6025](https://github.com/SigmaHQ/sigma/pull/6025) |
+| [Service principal owner added](detections/persistence/service-principal-owner-added.md) | Sentinel + SIGMA | Medium | [Azure-Sentinel#14307](https://github.com/Azure/Azure-Sentinel/pull/14307), [SigmaHQ#6025](https://github.com/SigmaHQ/sigma/pull/6025) |
 
 ### Privilege Escalation
 
@@ -118,6 +118,7 @@ All content has been contributed upstream. The following PRs are merged or in re
 | [#6012](https://github.com/SigmaHQ/sigma/pull/6012) | Azure Entra ID identity attack detections (6 rules) | In review |
 | [#6016](https://github.com/SigmaHQ/sigma/pull/6016) | SP credential addition and admin consent high-risk permission (2 rules) | In review |
 | [#6024](https://github.com/SigmaHQ/sigma/pull/6024) | Temporary Access Pass creation detection | In review |
+| [#6025](https://github.com/SigmaHQ/sigma/pull/6025) | Identity boundary expansion rules: guest-to-member, SP owner, redirect URI (3 rules) | In review |
 
 ---
 
