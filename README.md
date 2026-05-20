@@ -124,6 +124,12 @@ All content has been contributed upstream. The following PRs are merged or in re
 | [#6024](https://github.com/SigmaHQ/sigma/pull/6024) | Temporary Access Pass creation detection | In review |
 | [#6025](https://github.com/SigmaHQ/sigma/pull/6025) | Identity boundary expansion rules: guest-to-member, SP owner, redirect URI (3 rules) | In review |
 
+### splunk/security_content
+
+| PR | Description | Status |
+|----|-------------|--------|
+| [#4091](https://github.com/splunk/security_content/pull/4091) | Azure AD Entra ID identity attack detections: TAP creation, guest-to-member, federated identity credential (3 analytics) | In review |
+
 ### elastic/detection-rules
 
 | PR | Description | Status |
@@ -145,12 +151,13 @@ All content in this repo has been contributed upstream to the community:
 - **Microsoft Azure-Sentinel** - [github.com/Azure/Azure-Sentinel](https://github.com/Azure/Azure-Sentinel)
 - **SigmaHQ** - [github.com/SigmaHQ/sigma](https://github.com/SigmaHQ/sigma)
 - **Elastic detection-rules** - [github.com/elastic/detection-rules](https://github.com/elastic/detection-rules)
+- **Splunk security_content** - [github.com/splunk/security_content](https://github.com/splunk/security_content)
 - **IBM QRadar MCP** - [github.com/IBM/qradar-mcp](https://github.com/IBM/qradar-mcp)
 
 ---
 
 ## Author
 
-**descambiado** - SOC Analyst and Detection Engineer. Writing Entra ID identity attack detections across Microsoft Sentinel, Elastic SIEM, SigmaHQ, and contributing to security tooling.
+**descambiado** - SOC Analyst and Detection Engineer. Writing Entra ID identity attack detections across Microsoft Sentinel, Elastic SIEM, Splunk, SigmaHQ, and contributing to open-source security tooling.
 
 [github.com/descambiado](https://github.com/descambiado)
