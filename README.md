@@ -18,12 +18,12 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 
 | Technique | Name | Detections |
 |-----------|------|------------|
-| T1528 | Steal Application Access Token | [OAuth consent to high-risk permission](detections/credential-access/oauth-consent-high-risk-permission.md), [High-privilege app role assigned to SP](detections/persistence/application-app-role-assigned-high-privilege.md), [SP credential addition followed by immediate sign-in](detections/credential-access/service-principal-credential-then-signin.md) |
+| T1528 | Steal Application Access Token | [OAuth consent to high-risk permission](detections/credential-access/oauth-consent-high-risk-permission.md), [High-privilege app role assigned to SP](detections/persistence/application-app-role-assigned-high-privilege.md), [SP credential addition followed by immediate sign-in](detections/credential-access/service-principal-credential-then-signin.md), [OAuth application redirect URI modified](detections/credential-access/application-redirect-uri-modified.md) |
 | T1539 | Steal Web Session Cookie | [Anomalous token issuance after AiTM](detections/credential-access/anomalous-token-issuance-aitm.md) |
 | T1550 | Use Alternate Authentication Material | [Anomalous token issuance after AiTM](detections/credential-access/anomalous-token-issuance-aitm.md) |
 | T1556.006 | Modify Authentication Process: Multi-Factor Authentication | [MFA registration from unseen IP](detections/persistence/mfa-registration-from-unseen-ip.md), [Admin MFA registration for user](detections/persistence/admin-mfa-registration-for-user.md), [Authentication methods policy modified](detections/persistence/authentication-methods-policy-modified.md), [Temporary Access Pass created for user](detections/persistence/temporary-access-pass-created.md) |
-| T1098 | Account Manipulation | [Cross-tenant access setting modified](detections/persistence/cross-tenant-access-setting-modified.md), [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md), [Temporary Access Pass created for user](detections/persistence/temporary-access-pass-created.md) |
-| T1098.001 | Additional Cloud Credentials | [SP credential addition by non-historical actor](detections/persistence/service-principal-credential-addition-nonhistorical.md), [SP credential addition followed by immediate sign-in](detections/credential-access/service-principal-credential-then-signin.md) |
+| T1098 | Account Manipulation | [Cross-tenant access setting modified](detections/persistence/cross-tenant-access-setting-modified.md), [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md), [Temporary Access Pass created for user](detections/persistence/temporary-access-pass-created.md), [Guest user type changed to member](detections/persistence/guest-user-type-changed-to-member.md) |
+| T1098.001 | Additional Cloud Credentials | [SP credential addition by non-historical actor](detections/persistence/service-principal-credential-addition-nonhistorical.md), [SP credential addition followed by immediate sign-in](detections/credential-access/service-principal-credential-then-signin.md), [Service principal owner added](detections/persistence/service-principal-owner-added.md) |
 | T1098.003 | Additional Cloud Roles | [Guest user added to privileged role](detections/privilege-escalation/guest-user-added-to-privileged-role.md), [Bulk role assignments in short window](detections/privilege-escalation/bulk-role-assignments.md), [Directory role assigned outside PIM](detections/privilege-escalation/directory-role-assigned-outside-pim.md), [High-privilege app role assigned to SP](detections/persistence/application-app-role-assigned-high-privilege.md), [Privileged role assigned to newly created account](detections/persistence/privileged-role-assigned-to-new-account.md) |
 | T1136.003 | Create Account: Cloud Account | [Privileged role assigned to newly created account](detections/persistence/privileged-role-assigned-to-new-account.md) |
 | T1078.004 | Valid Accounts: Cloud Accounts | [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md), [PIM activation outside business hours](detections/defense-evasion/pim-activation-outside-business-hours.md), [Workload identity sign-in from new country](detections/credential-access/workload-identity-sign-in-new-country.md) |
@@ -42,6 +42,7 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 | [Anomalous token issuance after AiTM](detections/credential-access/anomalous-token-issuance-aitm.md) | Sentinel | High | [Azure-Sentinel#14276](https://github.com/Azure/Azure-Sentinel/pull/14276) |
 | [Workload identity sign-in from new country](detections/credential-access/workload-identity-sign-in-new-country.md) | Sentinel | Medium | [Azure-Sentinel#14281](https://github.com/Azure/Azure-Sentinel/pull/14281) |
 | [SP credential addition followed by immediate sign-in](detections/credential-access/service-principal-credential-then-signin.md) | Sentinel | High | [Azure-Sentinel#14299](https://github.com/Azure/Azure-Sentinel/pull/14299) |
+| [OAuth application redirect URI modified](detections/credential-access/application-redirect-uri-modified.md) | Sentinel | High | [Azure-Sentinel#14307](https://github.com/Azure/Azure-Sentinel/pull/14307) |
 
 ### Persistence
 
@@ -55,6 +56,8 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 | [High-privilege app role assigned to service principal](detections/persistence/application-app-role-assigned-high-privilege.md) | Sentinel + SIGMA | High | [Azure-Sentinel#14281](https://github.com/Azure/Azure-Sentinel/pull/14281), [SigmaHQ#6016](https://github.com/SigmaHQ/sigma/pull/6016) |
 | [Privileged role assigned to newly created account](detections/persistence/privileged-role-assigned-to-new-account.md) | Sentinel | High | [Azure-Sentinel#14299](https://github.com/Azure/Azure-Sentinel/pull/14299) |
 | [Temporary Access Pass created for user](detections/persistence/temporary-access-pass-created.md) | Sentinel | High | [Azure-Sentinel#14299](https://github.com/Azure/Azure-Sentinel/pull/14299) |
+| [Guest user type changed to member](detections/persistence/guest-user-type-changed-to-member.md) | Sentinel | Medium | [Azure-Sentinel#14307](https://github.com/Azure/Azure-Sentinel/pull/14307) |
+| [Service principal owner added](detections/persistence/service-principal-owner-added.md) | Sentinel | High | [Azure-Sentinel#14307](https://github.com/Azure/Azure-Sentinel/pull/14307) |
 
 ### Privilege Escalation
 
@@ -106,6 +109,7 @@ All content has been contributed upstream. The following PRs are merged or in re
 | [#14276](https://github.com/Azure/Azure-Sentinel/pull/14276) | Token abuse and OAuth consent hunting pack (3 queries) | In review |
 | [#14281](https://github.com/Azure/Azure-Sentinel/pull/14281) | Workload identity and privileged role hunting pack (3 queries) | In review |
 | [#14299](https://github.com/Azure/Azure-Sentinel/pull/14299) | Post-credential activity hunting pack (3 queries) | In review |
+| [#14307](https://github.com/Azure/Azure-Sentinel/pull/14307) | Identity boundary expansion hunting pack (3 queries) | In review |
 
 ### SigmaHQ/sigma
 
