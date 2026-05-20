@@ -120,6 +120,18 @@ All content has been contributed upstream. The following PRs are merged or in re
 | [#6024](https://github.com/SigmaHQ/sigma/pull/6024) | Temporary Access Pass creation detection | In review |
 | [#6025](https://github.com/SigmaHQ/sigma/pull/6025) | Identity boundary expansion rules: guest-to-member, SP owner, redirect URI (3 rules) | In review |
 
+### elastic/detection-rules
+
+| PR | Description | Status |
+|----|-------------|--------|
+| [#6168](https://github.com/elastic/detection-rules/pull/6168) | Entra ID identity attack rules: TAP creation, guest-to-member, OAuth redirect URI (3 rules) | In review |
+
+### IBM/qradar-mcp
+
+| PR | Description | Status |
+|----|-------------|--------|
+| [#4](https://github.com/IBM/qradar-mcp/pull/4) | Enable Ariel search Phase 2: AQL query execution and saved search management (8 tools + 4 resources) | In review |
+
 ---
 
 ## Open Source Contributions
@@ -128,11 +140,13 @@ All content in this repo has been contributed upstream to the community:
 
 - **Microsoft Azure-Sentinel** - [github.com/Azure/Azure-Sentinel](https://github.com/Azure/Azure-Sentinel)
 - **SigmaHQ** - [github.com/SigmaHQ/sigma](https://github.com/SigmaHQ/sigma)
+- **Elastic detection-rules** - [github.com/elastic/detection-rules](https://github.com/elastic/detection-rules)
+- **IBM QRadar MCP** - [github.com/IBM/qradar-mcp](https://github.com/IBM/qradar-mcp)
 
 ---
 
 ## Author
 
-**descambiado** - SOC Analyst and SIEM Engineer. Writing detections for Entra ID identity attacks, contributed to Azure-Sentinel and SigmaHQ.
+**descambiado** - SOC Analyst and Detection Engineer. Writing Entra ID identity attack detections across Microsoft Sentinel, Elastic SIEM, SigmaHQ, and contributing to security tooling.
 
 [github.com/descambiado](https://github.com/descambiado)
