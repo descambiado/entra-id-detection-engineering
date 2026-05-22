@@ -39,6 +39,7 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 | Detection | Platform | Severity | PR |
 |-----------|----------|----------|----|
 | [OAuth consent to high-risk permission](detections/credential-access/oauth-consent-high-risk-permission.md) | Sentinel + SIGMA | High | [Azure-Sentinel#14276](https://github.com/Azure/Azure-Sentinel/pull/14276), [SigmaHQ#6012](https://github.com/SigmaHQ/sigma/pull/6012) |
+| [OAuth consent to high-risk permission scope (90-day baseline)](detections/credential-access/oauth-consent-high-risk-permission-scope.md) | Sentinel | High | [Azure-Sentinel#14276](https://github.com/Azure/Azure-Sentinel/pull/14276) |
 | [Anomalous token issuance after AiTM](detections/credential-access/anomalous-token-issuance-aitm.md) | Sentinel | High | [Azure-Sentinel#14276](https://github.com/Azure/Azure-Sentinel/pull/14276) |
 | [Workload identity sign-in from new country](detections/credential-access/workload-identity-sign-in-new-country.md) | Sentinel | Medium | [Azure-Sentinel#14281](https://github.com/Azure/Azure-Sentinel/pull/14281) |
 | [SP credential addition followed by immediate sign-in](detections/credential-access/service-principal-credential-then-signin.md) | Sentinel | High | [Azure-Sentinel#14299](https://github.com/Azure/Azure-Sentinel/pull/14299) |
@@ -109,8 +110,8 @@ All content has been contributed upstream. The following PRs are merged or in re
 | [#14239](https://github.com/Azure/Azure-Sentinel/pull/14239) | Entra ID identity and application threat hunting pack (5 queries) | Merged May 13, 2026 |
 | [#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) | Defense weakening and privilege abuse hunting pack (3 queries) | In review |
 | [#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) | Cross-source correlation hunting pack (3 queries) | Merged May 19, 2026 |
-| [#14276](https://github.com/Azure/Azure-Sentinel/pull/14276) | Token abuse and OAuth consent hunting pack (3 queries) | In review |
-| [#14281](https://github.com/Azure/Azure-Sentinel/pull/14281) | Workload identity and privileged role hunting pack (3 queries) | In review |
+| [#14276](https://github.com/Azure/Azure-Sentinel/pull/14276) | Token abuse and OAuth consent hunting pack (3 queries) | Merged May 21, 2026 |
+| [#14281](https://github.com/Azure/Azure-Sentinel/pull/14281) | Workload identity and privileged role hunting pack (3 queries) | Merged May 19, 2026 |
 | [#14299](https://github.com/Azure/Azure-Sentinel/pull/14299) | Post-credential activity hunting pack (3 queries) | In review |
 | [#14307](https://github.com/Azure/Azure-Sentinel/pull/14307) | Identity boundary expansion hunting pack (3 queries) | In review |
 | [#14311](https://github.com/Azure/Azure-Sentinel/pull/14311) | Attack chain correlation hunting pack (3 queries) | In review |
