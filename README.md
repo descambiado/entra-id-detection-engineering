@@ -121,6 +121,8 @@ All content has been contributed upstream. The following PRs are merged or in re
 | [#14299](https://github.com/Azure/Azure-Sentinel/pull/14299) | Post-credential activity hunting pack (3 queries) | In review |
 | [#14307](https://github.com/Azure/Azure-Sentinel/pull/14307) | Identity boundary expansion hunting pack (3 queries) | In review |
 | [#14311](https://github.com/Azure/Azure-Sentinel/pull/14311) | Attack chain correlation hunting pack (3 queries) | In review |
+| [#14334](https://github.com/Azure/Azure-Sentinel/pull/14334) | Fix modifiedProperties displayName in OAuthConsentToHighRiskPermissionScope (bugfix) | In review |
+| [#14335](https://github.com/Azure/Azure-Sentinel/pull/14335) | Account takeover hunting pack: device code phishing, new SP + admin consent, bulk password reset (3 queries) | In review |
 
 ### SigmaHQ/sigma
 
