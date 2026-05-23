@@ -1,5 +1,11 @@
 # Entra ID Detection Engineering
 
+![GitHub Repo stars](https://img.shields.io/github/stars/descambiado/entra-id-detection-engineering?style=flat&color=blue)
+![GitHub last commit](https://img.shields.io/github/last-commit/descambiado/entra-id-detection-engineering?style=flat)
+![Azure-Sentinel PRs merged](https://img.shields.io/badge/Azure--Sentinel%20PRs%20merged-8-brightgreen?style=flat)
+![Detections](https://img.shields.io/badge/detections-26-orange?style=flat)
+![MITRE techniques](https://img.shields.io/badge/MITRE%20techniques-11-red?style=flat)
+
 Detection content for Microsoft Entra ID (Azure AD) threat scenarios - KQL hunting queries for Microsoft Sentinel and vendor-neutral SIGMA rules covering the full identity attack lifecycle.
 
 Built by a SOC analyst who learned security from the attacker side first.
