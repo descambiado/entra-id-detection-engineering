@@ -123,6 +123,7 @@ All content has been contributed upstream. The following PRs are merged or in re
 | [#14311](https://github.com/Azure/Azure-Sentinel/pull/14311) | Attack chain correlation hunting pack (3 queries) | In review |
 | [#14334](https://github.com/Azure/Azure-Sentinel/pull/14334) | Fix modifiedProperties displayName in OAuthConsentToHighRiskPermissionScope (bugfix) | In review |
 | [#14335](https://github.com/Azure/Azure-Sentinel/pull/14335) | Account takeover hunting pack: device code phishing, new SP + admin consent, bulk password reset (3 queries) | In review |
+| [#14336](https://github.com/Azure/Azure-Sentinel/pull/14336) | BadUSB PowerShell Run dialog hunting query (HID injection, DeviceProcessEvents) | In review |
 
 ### SigmaHQ/sigma
 
@@ -132,6 +133,7 @@ All content has been contributed upstream. The following PRs are merged or in re
 | [#6016](https://github.com/SigmaHQ/sigma/pull/6016) | SP credential addition and admin consent high-risk permission (2 rules) | In review |
 | [#6024](https://github.com/SigmaHQ/sigma/pull/6024) | Temporary Access Pass creation detection | In review |
 | [#6025](https://github.com/SigmaHQ/sigma/pull/6025) | Identity boundary expansion rules: guest-to-member, SP owner, redirect URI (3 rules) | In review |
+| [#6028](https://github.com/SigmaHQ/sigma/pull/6028) | BadUSB PowerShell Run dialog detection (HID injection via explorer.exe parent) | In review |
 
 ### splunk/security_content
 
@@ -162,6 +164,7 @@ All content in this repo has been contributed upstream to the community:
 - **Elastic detection-rules** - [github.com/elastic/detection-rules](https://github.com/elastic/detection-rules)
 - **Splunk security_content** - [github.com/splunk/security_content](https://github.com/splunk/security_content)
 - **IBM QRadar MCP** - [github.com/IBM/qradar-mcp](https://github.com/IBM/qradar-mcp)
+- **flipper-purple-team** - [github.com/descambiado/flipper-purple-team](https://github.com/descambiado/flipper-purple-team)
 
 ---
 
