@@ -124,6 +124,7 @@ All content has been contributed upstream. The following PRs are merged or in re
 | [#14334](https://github.com/Azure/Azure-Sentinel/pull/14334) | Fix modifiedProperties displayName in OAuthConsentToHighRiskPermissionScope (bugfix) | In review |
 | [#14335](https://github.com/Azure/Azure-Sentinel/pull/14335) | Account takeover hunting pack: device code phishing, new SP + admin consent, bulk password reset (3 queries) | In review |
 | [#14336](https://github.com/Azure/Azure-Sentinel/pull/14336) | BadUSB PowerShell Run dialog hunting query (HID injection, DeviceProcessEvents) | In review |
+| [#14339](https://github.com/Azure/Azure-Sentinel/pull/14339) | Auth anomaly and privilege abuse hunting pack: legacy auth sign-in, guest initiator, password reset pivot (3 queries) | In review |
 
 ### SigmaHQ/sigma
 
