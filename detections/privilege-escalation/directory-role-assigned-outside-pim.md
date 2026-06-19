@@ -1,18 +1,18 @@
 # Privileged Directory Role Assigned Outside PIM Workflow
 
 ## Technique
-**MITRE ATT&CK**: [T1098.003 — Additional Cloud Roles](https://attack.mitre.org/techniques/T1098/003/)  
+**MITRE ATT&CK**: [T1098.003 - Additional Cloud Roles](https://attack.mitre.org/techniques/T1098/003/)  
 **Tactic**: Persistence, Privilege Escalation
 
 ## What the attacker is doing
 
-After gaining sufficient access (Application Administrator, Privileged Role Administrator, or Global Administrator), an attacker assigns a privileged directory role directly to an account they control — bypassing the Privileged Identity Management workflow. This matters because:
+After gaining sufficient access (Application Administrator, Privileged Role Administrator, or Global Administrator), an attacker assigns a privileged directory role directly to an account they control - bypassing the Privileged Identity Management workflow. This matters because:
 
 - PIM requires justification, approval (if configured), and logs the activation with a business reason
 - Direct assignment leaves no justification trail and creates a permanent role, not a time-limited one
 - An attacker who bypasses PIM gets a role that persists until manually revoked, survives the victim account's password reset, and does not require MFA challenge on next use
 
-The distinguishing KQL signal: PIM activations log as `"Add member to role. (PIM activation)"`. Direct non-PIM assignments log as `"Add member to role."` — exact string, no suffix.
+The distinguishing KQL signal: PIM activations log as `"Add member to role. (PIM activation)"`. Direct non-PIM assignments log as `"Add member to role."` - exact string, no suffix.
 
 ## Why standard detections miss it
 
@@ -70,12 +70,12 @@ AuditLogs
 - Initial tenant provisioning where PIM has not yet been configured for all privileged roles
 - Automated provisioning pipelines with Application Administrator rights that assign roles as part of onboarding workflows
 
-**Analyst note**: Check if PIM is enabled for the assigned role. If PIM is configured for eligible assignment and someone made a permanent assignment instead, it is either misconfiguration or deliberate bypass — investigate the actor. If PIM is not configured for that role, this is a governance gap rather than an IOC, but still worth reviewing.
+**Analyst note**: Check if PIM is enabled for the assigned role. If PIM is configured for eligible assignment and someone made a permanent assignment instead, it is either misconfiguration or deliberate bypass - investigate the actor. If PIM is not configured for that role, this is a governance gap rather than an IOC, but still worth reviewing.
 
 ## Investigation Steps
 
 1. Identify the actor: check `InitiatedBy.user.userPrincipalName` or `InitiatedBy.app.displayName`
-2. Verify the actor's own role assignments — did they recently receive Application Administrator or Privileged Role Administrator?
+2. Verify the actor's own role assignments - did they recently receive Application Administrator or Privileged Role Administrator?
 3. Check if PIM is configured as eligible-only for the assigned role in Entra ID > Roles and Administrators > Role settings
 4. Review the target account's sign-in history after the assignment: `SigninLogs | where UserPrincipalName == "<target>" | where TimeGenerated > <assignment time>`
 5. Check if the target account is newly created or recently modified

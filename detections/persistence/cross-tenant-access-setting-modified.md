@@ -1,12 +1,12 @@
 # Cross-Tenant Access Setting Created or Modified
 
 ## Technique
-**MITRE ATT&CK**: [T1098 — Account Manipulation](https://attack.mitre.org/techniques/T1098/)  
+**MITRE ATT&CK**: [T1098 - Account Manipulation](https://attack.mitre.org/techniques/T1098/)  
 **Tactic**: Persistence
 
 ## What the attacker is doing
 
-Entra ID Cross-Tenant Access Settings (XTAS) allow organizations to configure trust relationships with specific external tenants — defining which users from those tenants can access internal resources, whether their MFA and device compliance claims are trusted, and what inbound/outbound sync is permitted.
+Entra ID Cross-Tenant Access Settings (XTAS) allow organizations to configure trust relationships with specific external tenants - defining which users from those tenants can access internal resources, whether their MFA and device compliance claims are trusted, and what inbound/outbound sync is permitted.
 
 An attacker with Global Administrator access can add their own tenant as a trusted partner and configure inbound trust to accept MFA claims from that tenant. This creates a persistent access path that:
 - Survives the remediation of all compromised internal accounts
@@ -72,7 +72,7 @@ AuditLogs
 - Planned cross-tenant synchronization setup for organizational mergers or acquisitions
 - IT-approved partner onboarding performed by authorized administrators
 
-**Analyst note**: Verify the partner tenant ID against your authorized partner list. An unknown tenant ID or a tenant registered in a free email provider domain (gmail.com, outlook.com) added as a trusted partner is an IOC. Pay particular attention to configurations that enable MFA trust from the partner tenant — this is the most dangerous setting.
+**Analyst note**: Verify the partner tenant ID against your authorized partner list. An unknown tenant ID or a tenant registered in a free email provider domain (gmail.com, outlook.com) added as a trusted partner is an IOC. Pay particular attention to configurations that enable MFA trust from the partner tenant - this is the most dangerous setting.
 
 ## Investigation Steps
 

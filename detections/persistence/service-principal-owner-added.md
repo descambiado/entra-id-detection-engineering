@@ -1,18 +1,18 @@
 # Service Principal Owner Added
 
 ## Technique
-**MITRE ATT&CK**: [T1098.001 — Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/001/)  
+**MITRE ATT&CK**: [T1098.001 - Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/001/)  
 **Tactic**: Persistence
 
 ## What the attacker is doing
 
-An Entra ID service principal owner has full control over the SP object: they can add and remove password credentials, add and remove certificate credentials, and modify the SP's properties — all without holding a tenant-wide admin role. Ownership is granted at the object level and is not visible in the role assignment audit trail that most teams monitor.
+An Entra ID service principal owner has full control over the SP object: they can add and remove password credentials, add and remove certificate credentials, and modify the SP's properties - all without holding a tenant-wide admin role. Ownership is granted at the object level and is not visible in the role assignment audit trail that most teams monitor.
 
 In a post-compromise persistence chain:
 
 1. Attacker compromises a user with Application Administrator or a scoped App Owner role
-2. Attacker adds themselves (or a controlled identity) as owner of a high-value SP — one SP audit log entry, low noise
-3. Attacker adds a new credential to the SP — now appears as a legitimate owner operation, not an anomalous actor
+2. Attacker adds themselves (or a controlled identity) as owner of a high-value SP - one SP audit log entry, low noise
+3. Attacker adds a new credential to the SP - now appears as a legitimate owner operation, not an anomalous actor
 4. Attacker authenticates as the SP, bypassing MFA and Conditional Access
 
 Step 2 sits in a detection gap between generic `Add owner` noise and the credential-focused detections that watch step 3. Catching ownership changes proactively provides a day of lead time before the SP is weaponized.
@@ -21,7 +21,7 @@ This is documented in post-incident analysis of Midnight Blizzard lateral moveme
 
 ## Why standard detections miss it
 
-`Add owner to service principal` fires legitimately when developers add colleagues to SP objects they manage, when DevOps pipelines update app ownership during deployments, and when IT governance transfers object ownership between teams. Most detections either suppress the operation entirely or alert on it unconditionally at low severity — neither approach is useful.
+`Add owner to service principal` fires legitimately when developers add colleagues to SP objects they manage, when DevOps pipelines update app ownership during deployments, and when IT governance transfers object ownership between teams. Most detections either suppress the operation entirely or alert on it unconditionally at low severity - neither approach is useful.
 
 The useful signal is ownership of high-privilege SPs. An SP with `Directory.ReadWrite.All`, `RoleManagement.ReadWrite.Directory`, or production infrastructure access getting a new owner outside business hours from an unfamiliar IP is the pattern to catch.
 

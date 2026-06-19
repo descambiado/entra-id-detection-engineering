@@ -1,33 +1,33 @@
 # Sign-In from New Country Followed by Sensitive Operation
 
 ## Technique
-**MITRE ATT&CK**: [T1078.004 — Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/) · [T1098 — Account Manipulation](https://attack.mitre.org/techniques/T1098/)  
+**MITRE ATT&CK**: [T1078.004 - Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/) · [T1098 - Account Manipulation](https://attack.mitre.org/techniques/T1098/)  
 **Tactic**: Initial Access, Persistence, Privilege Escalation
 
 ## What the attacker is doing
 
-An attacker using stolen credentials signs in from their own location — which is geographically novel for the victim account — and immediately performs a high-value administrative action. The combination of a new sign-in origin and an immediate sensitive operation is a strong post-compromise signal.
+An attacker using stolen credentials signs in from their own location - which is geographically novel for the victim account - and immediately performs a high-value administrative action. The combination of a new sign-in origin and an immediate sensitive operation is a strong post-compromise signal.
 
 The key insight: attackers do not waste time after gaining access. They operate under time pressure because:
 - The victim may detect the compromise and revoke sessions at any moment
-- SOC teams work business hours — off-hours intrusions have more runway but on-hours attackers compensate with speed
+- SOC teams work business hours - off-hours intrusions have more runway but on-hours attackers compensate with speed
 - The first privileged action (adding persistence, escalating privilege, exfiltrating credentials) happens within minutes of the initial sign-in in most documented intrusions
 
 This detection builds a 30-day country baseline per user from successful interactive sign-ins and correlates any novel-country sign-in with a sensitive AuditLogs operation within one hour by the same user.
 
 **Sensitive operations monitored:**
-- `Add member to role.` — direct privilege escalation
-- `Consent to application` — OAuth persistence
-- `Add service principal credentials` — app credential backdoor
-- `Update application - Certificates and secrets management` — app credential rotation
-- `Add application` — new app registration
-- `Delete/Update conditional access policy` — defense weakening
-- `Set domain authentication` — Golden SAML setup
-- `Add member to role (PIM activation)` — PIM-based privilege escalation
+- `Add member to role.` - direct privilege escalation
+- `Consent to application` - OAuth persistence
+- `Add service principal credentials` - app credential backdoor
+- `Update application - Certificates and secrets management` - app credential rotation
+- `Add application` - new app registration
+- `Delete/Update conditional access policy` - defense weakening
+- `Set domain authentication` - Golden SAML setup
+- `Add member to role (PIM activation)` - PIM-based privilege escalation
 
 ## Why standard detections miss it
 
-Individual signals — a new-country sign-in, or a role assignment — each generate noise on their own. The correlation of both events within a narrow time window for the same user dramatically reduces false positives. An administrator traveling and doing routine work will have both events, but the travel will likely be known and the operations unremarkable. An attacker will trigger both events in rapid succession for the same account.
+Individual signals - a new-country sign-in, or a role assignment - each generate noise on their own. The correlation of both events within a narrow time window for the same user dramatically reduces false positives. An administrator traveling and doing routine work will have both events, but the travel will likely be known and the operations unremarkable. An attacker will trigger both events in rapid succession for the same account.
 
 ## Detection
 
@@ -96,9 +96,9 @@ AuditLogs
 ## Investigation Steps
 
 1. Check the `NewCountry` against any known travel records or VPN configurations
-2. Review the `TimeDeltaMinutes` — faster = more suspicious
+2. Review the `TimeDeltaMinutes` - faster = more suspicious
 3. Verify whether the `OperationName` is routine for this user (e.g., a Global Admin who regularly assigns roles vs. a standard user who never does)
-4. Check for additional sign-ins from the same IP in other user accounts — shared infrastructure indicates a targeted attack
+4. Check for additional sign-ins from the same IP in other user accounts - shared infrastructure indicates a targeted attack
 5. If suspicious: revoke all sessions, force MFA re-registration, notify the user
 
 ## References

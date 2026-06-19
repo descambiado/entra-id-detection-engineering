@@ -1,7 +1,7 @@
 # Privileged Role Assigned to Newly Created Account
 
 ## Technique
-**MITRE ATT&CK**: [T1098.003 — Additional Cloud Roles](https://attack.mitre.org/techniques/T1098/003/), [T1136.003 — Create Account: Cloud Account](https://attack.mitre.org/techniques/T1136/003/)  
+**MITRE ATT&CK**: [T1098.003 - Additional Cloud Roles](https://attack.mitre.org/techniques/T1098/003/), [T1136.003 - Create Account: Cloud Account](https://attack.mitre.org/techniques/T1136/003/)  
 **Tactic**: Persistence, Privilege Escalation
 
 ## What the attacker is doing
@@ -87,11 +87,11 @@ AuditLogs
 - Legitimate onboarding of a new admin where account creation and role assignment happen in the same IT workflow (same day is expected)
 - Automated provisioning pipelines that create service accounts and assign roles in a single deployment
 
-**Analyst note**: The key differentiator is the actor. If the same actor who created the account also assigned the role, this is likely a single provisioning operation. If a different actor assigned the role — or if the role assignment was made from a different IP or at a different time than account creation — treat as suspicious. Also check whether the new account has MFA registered and whether that registration was made from a known device.
+**Analyst note**: The key differentiator is the actor. If the same actor who created the account also assigned the role, this is likely a single provisioning operation. If a different actor assigned the role - or if the role assignment was made from a different IP or at a different time than account creation - treat as suspicious. Also check whether the new account has MFA registered and whether that registration was made from a known device.
 
 ## Investigation Steps
 
-1. Identify who created the account and who assigned the role — check whether they are the same actor
+1. Identify who created the account and who assigned the role - check whether they are the same actor
 2. Check whether MFA methods were registered on the new account: `AuditLogs | where OperationName =~ "User registered security info" | where TargetResources[0].id == "<userid>"`
 3. Check sign-in activity for the new account in `SigninLogs` to see if it has been used
 4. Review the actor's full `AuditLogs` activity in the session that included the role assignment

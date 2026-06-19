@@ -1,12 +1,12 @@
 # PIM Role Activation Outside Business Hours
 
 ## Technique
-**MITRE ATT&CK**: [T1078.004 — Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/)  
+**MITRE ATT&CK**: [T1078.004 - Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/)  
 **Tactic**: Persistence, Privilege Escalation
 
 ## What the attacker is doing
 
-Privileged Identity Management (PIM) provides just-in-time privileged access — a user activates an eligible role for a limited time window rather than holding it permanently. An attacker who compromises a PIM-eligible account can activate the role if the activation policy does not require MFA or manager approval.
+Privileged Identity Management (PIM) provides just-in-time privileged access - a user activates an eligible role for a limited time window rather than holding it permanently. An attacker who compromises a PIM-eligible account can activate the role if the activation policy does not require MFA or manager approval.
 
 Attackers deliberately choose off-hours windows for PIM activation because:
 - Security operations teams are understaffed or absent outside business hours
@@ -66,7 +66,7 @@ AuditLogs
 ## Investigation Steps
 
 1. Check whether the activating user had an on-call assignment or active incident ticket at the time
-2. Review the IP address — does it match the user's typical location?
+2. Review the IP address - does it match the user's typical location?
 3. Check what the user did with the activated role during the activation window
 4. For service principal activations (no ActorUpn), verify the runbook or automation that triggered it
 

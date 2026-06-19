@@ -1,7 +1,7 @@
 # Administrator Registered MFA Method on Behalf of User
 
 ## Technique
-**MITRE ATT&CK**: [T1556.006 — Modify Authentication Process: Multi-Factor Authentication](https://attack.mitre.org/techniques/T1556/006/)  
+**MITRE ATT&CK**: [T1556.006 - Modify Authentication Process: Multi-Factor Authentication](https://attack.mitre.org/techniques/T1556/006/)  
 **Tactic**: Persistence, Defense Evasion
 
 ## What the attacker is doing

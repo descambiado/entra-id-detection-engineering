@@ -1,19 +1,19 @@
 # Guest User Added to Privileged Entra ID Role
 
 ## Technique
-**MITRE ATT&CK**: [T1098.003 — Account Manipulation: Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/003/)  
+**MITRE ATT&CK**: [T1098.003 - Account Manipulation: Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/003/)  
 **Tactic**: Persistence, Privilege Escalation
 
 ## What the attacker is doing
 
 An attacker who has compromised a privileged internal account adds a guest identity they control (from an external tenant) to a high-privilege directory role such as Global Administrator, Privileged Role Administrator, or Security Administrator.
 
-This is a cross-tenant persistence technique. The guest identity is anchored in the attacker's own tenant — meaning:
+This is a cross-tenant persistence technique. The guest identity is anchored in the attacker's own tenant - meaning:
 - When the victim remediates the compromised internal account, the attacker retains access through the guest
 - Resetting passwords, revoking sessions, or disabling the internal account does not affect the guest
 - The guest can be used to re-add the compromised account or add additional backdoors
 
-Guest accounts are identified by the `#EXT#` string in their UPN (e.g., `attacker_gmail.com#EXT#@victim.onmicrosoft.com`). This detection fires specifically on that pattern combined with a direct role assignment — bypassing PIM (Privileged Identity Management) is an additional red flag.
+Guest accounts are identified by the `#EXT#` string in their UPN (e.g., `attacker_gmail.com#EXT#@victim.onmicrosoft.com`). This detection fires specifically on that pattern combined with a direct role assignment - bypassing PIM (Privileged Identity Management) is an additional red flag.
 
 ## Why standard detections miss it
 
@@ -83,7 +83,7 @@ level: high
 
 1. Identify the actor who performed the assignment (`ActorUpn`, `ActorIp`)
 2. Check if the actor account itself is compromised: recent sign-ins from new countries, MFA changes
-3. Check the guest account's home tenant — look up the external domain
+3. Check the guest account's home tenant - look up the external domain
 4. Review what actions the guest has performed since being added to the role
 5. Remove the guest from the role immediately if not authorized; review all role assignments made by the same actor
 

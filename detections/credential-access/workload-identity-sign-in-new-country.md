@@ -1,16 +1,16 @@
 # Workload Identity Sign-In From New Country
 
 ## Technique
-**MITRE ATT&CK**: [T1078.004 — Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/)  
+**MITRE ATT&CK**: [T1078.004 - Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/)  
 **Tactic**: Initial Access, Credential Access
 
 ## What the attacker is doing
 
 Service principals (workload identities) authenticate using client credentials: a client secret or certificate tied to an application registration. Unlike human accounts, workload identities cannot use MFA and are not protected by Conditional Access location policies in most configurations.
 
-When an attacker steals a client secret — from a leaked `.env` file, a misconfigured CI/CD secret store, a compromised developer machine, or a repository scan — they can authenticate as that SP from anywhere. The stolen credential looks identical to legitimate traffic in the sign-in log.
+When an attacker steals a client secret - from a leaked `.env` file, a misconfigured CI/CD secret store, a compromised developer machine, or a repository scan - they can authenticate as that SP from anywhere. The stolen credential looks identical to legitimate traffic in the sign-in log.
 
-The geographic baseline is the signal: legitimate workload identities have predictable infrastructure. A GitHub Actions runner authenticating as an SP will always appear from GitHub's IP ranges in a consistent region. Azure DevOps pipelines sign in from Microsoft's datacenter IPs. An SP that has never signed in from Brazil suddenly authenticating from a Brazilian IP is not a false positive — it is a credential being replayed from wherever the attacker happens to be operating.
+The geographic baseline is the signal: legitimate workload identities have predictable infrastructure. A GitHub Actions runner authenticating as an SP will always appear from GitHub's IP ranges in a consistent region. Azure DevOps pipelines sign in from Microsoft's datacenter IPs. An SP that has never signed in from Brazil suddenly authenticating from a Brazilian IP is not a false positive - it is a credential being replayed from wherever the attacker happens to be operating.
 
 ## Why standard detections miss it
 
@@ -49,7 +49,7 @@ AADServicePrincipalSignInLogs
 - Legitimate infrastructure migration moving a pipeline from one cloud region or provider to another
 - Global organizations with multi-region deployment where an SP is intentionally used from multiple geographies
 
-**Analyst note**: Filter for SPs that have at least 30 days of baseline data (`KnownCountries` is not null). For SPs with an established baseline, the false positive rate is very low — the infrastructure footprint of a legitimate workload identity is almost never dynamic.
+**Analyst note**: Filter for SPs that have at least 30 days of baseline data (`KnownCountries` is not null). For SPs with an established baseline, the false positive rate is very low - the infrastructure footprint of a legitimate workload identity is almost never dynamic.
 
 ## Investigation Steps
 

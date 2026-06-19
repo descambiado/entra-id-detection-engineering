@@ -1,21 +1,21 @@
 # Guest User Type Changed to Member
 
 ## Technique
-**MITRE ATT&CK**: [T1098 — Account Manipulation](https://attack.mitre.org/techniques/T1098/)  
+**MITRE ATT&CK**: [T1098 - Account Manipulation](https://attack.mitre.org/techniques/T1098/)  
 **Tactic**: Persistence
 
 ## What the attacker is doing
 
 In Entra ID, external collaborators join a tenant as Guest accounts. Guest accounts operate under a restricted permission model: they cannot enumerate tenant users and groups, have no access to internal SharePoint sites that exclude guests, and are visible as external in most directory listings. Member accounts have full directory read access by default and are treated as internal by most authorization checks.
 
-An attacker who compromises a guest account — through a phishing token, a leaked credential, or an AiTM session — may escalate it to Member type using a User Administrator or Global Administrator account they control. This is a one-field change (`UserType: Guest → Member`) that:
+An attacker who compromises a guest account - through a phishing token, a leaked credential, or an AiTM session - may escalate it to Member type using a User Administrator or Global Administrator account they control. This is a one-field change (`UserType: Guest → Member`) that:
 
 - Grants the account full directory read access, enabling enumeration of users, groups, roles, and applications
 - Removes the "external" visibility markers that might trigger analyst scrutiny
 - Bypasses Conditional Access policies scoped to external or guest identities
 - Persists across password resets of the original guest account
 
-This technique is quiet because `Update user` fires continuously in any active tenant. The signal is the specific `UserType` property change — which most detections don't filter on.
+This technique is quiet because `Update user` fires continuously in any active tenant. The signal is the specific `UserType` property change - which most detections don't filter on.
 
 ## Why standard detections miss it
 
@@ -70,7 +70,7 @@ AuditLogs
 - B2B collaboration migrations where a partner organization's users are intentionally promoted to full members
 - Organizational restructuring where former external contractors are onboarded as permanent employees and converted in place
 
-**Analyst note**: Check when the guest account was originally created and whether the converting actor's role was recently assigned. A guest account created within the last 7 days and immediately promoted to member is a strong IOC. Also check post-conversion sign-in activity in `SigninLogs` — a Member-type account signing in to access directory enumeration APIs shortly after conversion is consistent with initial reconnaissance.
+**Analyst note**: Check when the guest account was originally created and whether the converting actor's role was recently assigned. A guest account created within the last 7 days and immediately promoted to member is a strong IOC. Also check post-conversion sign-in activity in `SigninLogs` - a Member-type account signing in to access directory enumeration APIs shortly after conversion is consistent with initial reconnaissance.
 
 ## Investigation Steps
 

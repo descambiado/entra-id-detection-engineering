@@ -1,14 +1,14 @@
 # Bulk Role Assignments in Short Window
 
 ## Technique
-**MITRE ATT&CK**: [T1098.003 — Account Manipulation: Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/003/)  
+**MITRE ATT&CK**: [T1098.003 - Account Manipulation: Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/003/)  
 **Tactic**: Persistence, Privilege Escalation
 
 ## What the attacker is doing
 
 An attacker with privileged access rapidly assigns directory roles to multiple accounts they control before the intrusion is detected and remediated. The operational logic is simple: the attacker knows they have limited time before their access is revoked, so they maximize persistence by distributing privilege across as many accounts as possible in one burst.
 
-This differs from deliberate administrative work, which involves individual, reviewed role assignments with context — a provisioning request, an approval ticket, a change window. Three or more role assignments within ten minutes to different accounts by the same actor is outside the normal operational pattern of human administrators.
+This differs from deliberate administrative work, which involves individual, reviewed role assignments with context - a provisioning request, an approval ticket, a change window. Three or more role assignments within ten minutes to different accounts by the same actor is outside the normal operational pattern of human administrators.
 
 The detection aggregates by actor and ten-minute time bucket, then enriches with the actor's most recent sign-in country to provide geographic context for triage.
 
@@ -73,13 +73,13 @@ BulkActors
 - Help desk tools performing mass role setup during tenant restructuring
 - Authorized migration workflows assigning roles to migrated accounts
 
-**Analyst note**: Adjust the `threshold` variable (default: 3) upward in environments where automated provisioning regularly assigns roles in bulk. The `WindowDurationSeconds` column is key — a human administrator assigning 5 roles will have seconds or minutes between each assignment; an automated attack script will have sub-second gaps.
+**Analyst note**: Adjust the `threshold` variable (default: 3) upward in environments where automated provisioning regularly assigns roles in bulk. The `WindowDurationSeconds` column is key - a human administrator assigning 5 roles will have seconds or minutes between each assignment; an automated attack script will have sub-second gaps.
 
 ## Investigation Steps
 
-1. Review `AssignedUsers` — are they all new accounts? Dormant accounts? Accounts created close together?
+1. Review `AssignedUsers` - are they all new accounts? Dormant accounts? Accounts created close together?
 2. Check `LastSignInCountry` against expected actor location
-3. Review `WindowDurationSeconds` — sub-10-second windows indicate scripted assignment
+3. Review `WindowDurationSeconds` - sub-10-second windows indicate scripted assignment
 4. Check whether the actor account was itself recently created or had its own role elevated
 5. For each assigned user, review subsequent privileged activity
 

@@ -1,12 +1,12 @@
 # MFA Registration from Unseen IP
 
 ## Technique
-**MITRE ATT&CK**: [T1556.006 — Modify Authentication Process: Multi-Factor Authentication](https://attack.mitre.org/techniques/T1556/006/)  
+**MITRE ATT&CK**: [T1556.006 - Modify Authentication Process: Multi-Factor Authentication](https://attack.mitre.org/techniques/T1556/006/)  
 **Tactic**: Persistence, Defense Evasion
 
 ## What the attacker is doing
 
-An attacker who has obtained a user's password registers a new MFA method from an IP address that has never been used by that user to sign in. Once registered, the attacker's device becomes a valid second factor — they can authenticate as the victim even after a password reset, because the MFA method is tied to the attacker's device, not the victim's.
+An attacker who has obtained a user's password registers a new MFA method from an IP address that has never been used by that user to sign in. Once registered, the attacker's device becomes a valid second factor - they can authenticate as the victim even after a password reset, because the MFA method is tied to the attacker's device, not the victim's.
 
 This technique is widely used in AiTM (Adversary-in-the-Middle) phishing campaigns. The attacker intercepts the victim's session token, uses it to register their own MFA method, and then has persistent access via their own credentials rather than relying on the stolen token (which may expire or be revoked).
 
@@ -58,7 +58,7 @@ AuditLogs
 - Users setting up MFA for the first time (no baseline → `KnownIPCount` = 0)
 - VPN exit nodes not previously used for sign-in
 
-**Analyst note**: The `KnownIPCount` column is your primary triage field. A value of 0 means the user has no sign-in history in the baseline window — this is a new account or one that has never used Entra ID interactively, and requires different handling. A user with 500 known IPs registering from an unknown IP warrants closer investigation than a user with 3 known IPs.
+**Analyst note**: The `KnownIPCount` column is your primary triage field. A value of 0 means the user has no sign-in history in the baseline window - this is a new account or one that has never used Entra ID interactively, and requires different handling. A user with 500 known IPs registering from an unknown IP warrants closer investigation than a user with 3 known IPs.
 
 ## Investigation Steps
 

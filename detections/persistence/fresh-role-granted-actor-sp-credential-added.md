@@ -1,12 +1,12 @@
 # Service Principal Credential Added by Freshly Privileged User
 
 ## Technique
-**MITRE ATT&CK**: [T1098.001 — Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/001/)  
+**MITRE ATT&CK**: [T1098.001 - Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/001/)  
 **Tactic**: Persistence
 
 ## What the attacker is doing
 
-After gaining control of an account, an attacker's first move is often role elevation — granting the account Application Administrator or Global Administrator to legitimize subsequent operations. The credential addition that follows is the actual persistence mechanism, but by the time it fires, most detections have no memory of the role grant that preceded it by minutes or hours.
+After gaining control of an account, an attacker's first move is often role elevation - granting the account Application Administrator or Global Administrator to legitimize subsequent operations. The credential addition that follows is the actual persistence mechanism, but by the time it fires, most detections have no memory of the role grant that preceded it by minutes or hours.
 
 The attack chain:
 
@@ -92,7 +92,7 @@ AuditLogs
 - Automated provisioning pipelines that grant a service account elevated rights and then run credential rotation scripts in sequence
 - Scheduled access reviews that result in role grants followed by SP maintenance
 
-**Analyst note**: The most important variable is the target SP. An SP with broad Graph API permissions, production infrastructure access, or financial/HR data access warrants immediate escalation. SPs backing internal tooling with narrow scope can be triaged more slowly. Also check the role grant actor — if a different account granted the role than the one that added the credential, that is a stronger indicator of compromise.
+**Analyst note**: The most important variable is the target SP. An SP with broad Graph API permissions, production infrastructure access, or financial/HR data access warrants immediate escalation. SPs backing internal tooling with narrow scope can be triaged more slowly. Also check the role grant actor - if a different account granted the role than the one that added the credential, that is a stronger indicator of compromise.
 
 ## Investigation Steps
 

@@ -1,7 +1,7 @@
 # Successful Sign-in from Unseen IP After MFA Disabled
 
 ## Technique
-**MITRE ATT&CK**: [T1556.006 — Modify Authentication Process: Multi-Factor Authentication](https://attack.mitre.org/techniques/T1556/006/), [T1078.004 — Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/)  
+**MITRE ATT&CK**: [T1556.006 - Modify Authentication Process: Multi-Factor Authentication](https://attack.mitre.org/techniques/T1556/006/), [T1078.004 - Valid Accounts: Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/)  
 **Tactic**: Persistence, Credential Access
 
 ## What the attacker is doing
@@ -13,7 +13,7 @@ After gaining control of an account, an attacker who has captured only the passw
 3. Attacker signs in using the password alone from their own IP
 4. Sign-in succeeds without MFA challenge
 
-The second event — the sign-in from an IP that has never been seen for this account — is individually low-signal (new IP sign-ins are common). The first event — MFA disable — is individually noisy (IT helpdesk disables MFA for locked-out users routinely). The 60-minute correlation window between them is the signal.
+The second event - the sign-in from an IP that has never been seen for this account - is individually low-signal (new IP sign-ins are common). The first event - MFA disable - is individually noisy (IT helpdesk disables MFA for locked-out users routinely). The 60-minute correlation window between them is the signal.
 
 This pattern appears in AiTM post-compromise activity and in helpdesk social engineering attacks where the attacker convinces support to disable MFA for the compromised account.
 
@@ -80,13 +80,13 @@ SigninLogs
 - Self-service MFA reset followed by sign-in from a new machine or network
 - Employee returning from extended leave who clears old MFA methods and logs in from a new home IP
 
-**Analyst note**: Check who disabled MFA — if the disabling actor and the signing-in user are different accounts, the confidence is higher. Review `AutonomousSystemNumber`: residential ISPs (consumer broadband) are more consistent with legitimate new-location sign-ins; hosting providers, VPN services, or Tor exit nodes are strong indicators of attacker-controlled infrastructure.
+**Analyst note**: Check who disabled MFA - if the disabling actor and the signing-in user are different accounts, the confidence is higher. Review `AutonomousSystemNumber`: residential ISPs (consumer broadband) are more consistent with legitimate new-location sign-ins; hosting providers, VPN services, or Tor exit nodes are strong indicators of attacker-controlled infrastructure.
 
 ## Investigation Steps
 
 1. Determine who disabled MFA: `AuditLogs | where OperationName in~ ("Disable Strong Authentication", "User deleted security info") | where TargetResources[0].userPrincipalName =~ "<affected-user>"`
 2. Check if the disabling was helpdesk-initiated (actor is a service account or admin UPN) or self-service (actor equals affected user)
-3. Verify the sign-in IP's reputation: ASN, threat intelligence, geolocation — hosting/VPN/Tor requires immediate escalation
+3. Verify the sign-in IP's reputation: ASN, threat intelligence, geolocation - hosting/VPN/Tor requires immediate escalation
 4. Check whether the account has MFA re-registered after the sign-in: `AuditLogs | where OperationName =~ "User registered security info" | where TargetResources[0].userPrincipalName =~ "<affected-user>" | where TimeGenerated > <signin-time>`
 5. Review subsequent activity for the account: email rules, forwarding changes, access to sensitive data, role changes
 

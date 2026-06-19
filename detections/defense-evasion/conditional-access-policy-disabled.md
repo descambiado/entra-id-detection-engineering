@@ -1,15 +1,15 @@
 # Conditional Access Policy Disabled or Deleted
 
 ## Technique
-**MITRE ATT&CK**: [T1562.001 — Impair Defenses: Disable or Modify Tools](https://attack.mitre.org/techniques/T1562/001/)  
+**MITRE ATT&CK**: [T1562.001 - Impair Defenses: Disable or Modify Tools](https://attack.mitre.org/techniques/T1562/001/)  
 **Tactic**: Defense Evasion
 
 ## What the attacker is doing
 
-Conditional Access policies are the primary enforcement layer in Entra ID — they define when MFA is required, which devices are trusted, and which locations are allowed. An attacker with Conditional Access Administrator or Global Administrator access can disable or delete a CA policy to remove enforcement for subsequent sign-ins.
+Conditional Access policies are the primary enforcement layer in Entra ID - they define when MFA is required, which devices are trusted, and which locations are allowed. An attacker with Conditional Access Administrator or Global Administrator access can disable or delete a CA policy to remove enforcement for subsequent sign-ins.
 
 **Disabling vs. deleting:**
-- **Disabling** (`state: disabled`) is preferred by sophisticated attackers because it is reversible — the attacker can re-enable the policy before defenders notice, making the window of exposure harder to detect forensically
+- **Disabling** (`state: disabled`) is preferred by sophisticated attackers because it is reversible - the attacker can re-enable the policy before defenders notice, making the window of exposure harder to detect forensically
 - **Deleting** is more destructive and irreversible, but leaves a clean audit trail with no policy object remaining
 
 Common CA policies targeted:
@@ -72,12 +72,12 @@ union PolicyDeletions, PolicyDisablements
 - Testing or staging environments where policies are frequently toggled
 - Policy migration workflows
 
-**Analyst note**: Deletions are always higher priority than disablements. For disablements, check whether the policy was re-enabled within minutes — this could indicate an attacker testing the disable/re-enable cycle to understand detection coverage. Any CA policy change affecting MFA requirements for admins or blocking legacy authentication should be treated as critical until verified.
+**Analyst note**: Deletions are always higher priority than disablements. For disablements, check whether the policy was re-enabled within minutes - this could indicate an attacker testing the disable/re-enable cycle to understand detection coverage. Any CA policy change affecting MFA requirements for admins or blocking legacy authentication should be treated as critical until verified.
 
 ## Investigation Steps
 
 1. Identify the actor and verify authorization through change management records
-2. Review sign-in logs in the 24h after the policy change — did any previously blocked sign-ins now succeed?
+2. Review sign-in logs in the 24h after the policy change - did any previously blocked sign-ins now succeed?
 3. Check whether other CA policies were modified by the same actor in the same session
 4. If unauthorized: immediately re-enable or recreate the policy, then investigate how the actor's privileges were obtained
 

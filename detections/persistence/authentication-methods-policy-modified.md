@@ -1,7 +1,7 @@
 # Authentication Methods Policy Modified
 
 ## Technique
-**MITRE ATT&CK**: [T1556.006 — Modify Authentication Process: Multi-Factor Authentication](https://attack.mitre.org/techniques/T1556/006/)  
+**MITRE ATT&CK**: [T1556.006 - Modify Authentication Process: Multi-Factor Authentication](https://attack.mitre.org/techniques/T1556/006/)  
 **Tactic**: Defense Evasion, Persistence
 
 ## What the attacker is doing
@@ -9,12 +9,12 @@
 The tenant-wide authentication methods policy controls which MFA methods are enabled or disabled for all users in the organization. An attacker with Global Administrator access can modify this policy to:
 
 - **Disable strong methods** (FIDO2 security keys, certificate-based authentication) to force users onto weaker methods that the attacker can intercept or bypass
-- **Enable SMS/voice call** if it was previously disabled — enabling SIM-swap attacks against any user in the tenant
+- **Enable SMS/voice call** if it was previously disabled - enabling SIM-swap attacks against any user in the tenant
 - **Disable the Microsoft Authenticator app** to force password-only authentication in certain flows
 
-This is a tenant-level attack with wide blast radius — it affects every user, not just the compromised account. It is distinct from:
-- **Identity Protection MFA registration policy** (`Update User Risk and MFA Registration Policy`) — which controls whether risky users must re-register MFA
-- **Per-user MFA settings** — which affect individual accounts
+This is a tenant-level attack with wide blast radius - it affects every user, not just the compromised account. It is distinct from:
+- **Identity Protection MFA registration policy** (`Update User Risk and MFA Registration Policy`) - which controls whether risky users must re-register MFA
+- **Per-user MFA settings** - which affect individual accounts
 
 The audit event is `Update authentication methods policy` under Category `Policy`.
 

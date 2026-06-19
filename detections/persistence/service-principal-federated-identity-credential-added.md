@@ -1,12 +1,12 @@
 # Federated Identity Credential Added to Service Principal
 
 ## Technique
-**MITRE ATT&CK**: [T1098.001 — Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/001/)  
+**MITRE ATT&CK**: [T1098.001 - Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/001/)  
 **Tactic**: Persistence
 
 ## What the attacker is doing
 
-Workload identity federation lets an external workload — a GitHub Actions workflow, an AWS role, a Kubernetes service account — authenticate as an Entra ID service principal by presenting an OIDC token from its own IdP. Entra ID validates the token against the issuer URL and subject claim configured in the federated credential, then issues an Entra access token for the SP.
+Workload identity federation lets an external workload - a GitHub Actions workflow, an AWS role, a Kubernetes service account - authenticate as an Entra ID service principal by presenting an OIDC token from its own IdP. Entra ID validates the token against the issuer URL and subject claim configured in the federated credential, then issues an Entra access token for the SP.
 
 From a defense perspective, this is a secretless credential: there is no `passwordCredential` or `keyCredential` to rotate, expire, or detect with secrets scanning. The SP gains a persistent authentication path tied to the external IdP rather than anything that lives in the tenant.
 
@@ -21,7 +21,7 @@ This technique is particularly relevant to CI/CD supply chain compromise: an att
 
 ## Why standard detections miss it
 
-Most SP credential monitoring watches `Add service principal credentials` — the operation for password and certificate credentials. Federated credential additions produce `Update service principal` with a modification to `FederatedIdentityCredentials` in `modifiedProperties`, a different operation name that bypasses those detections entirely.
+Most SP credential monitoring watches `Add service principal credentials` - the operation for password and certificate credentials. Federated credential additions produce `Update service principal` with a modification to `FederatedIdentityCredentials` in `modifiedProperties`, a different operation name that bypasses those detections entirely.
 
 The event is not noisy. In most tenants, federated credential additions are rare and should be reviewed when they appear.
 
@@ -74,12 +74,12 @@ AuditLogs
 - Infrastructure-as-code pipelines that provision federated credentials for workloads during deployment
 - Terraform or Bicep deployments that manage SP federated credentials as part of standard IaC
 
-**Analyst note**: Inspect `NewCreds` for the issuer URL and subject claim. A legitimate federation points to a known IdP (`token.actions.githubusercontent.com`, a known Kubernetes cluster OIDC endpoint, etc.) with a specific, narrow subject claim. A broad subject wildcard or an unknown issuer URL is the key indicator. Also compare `OldCreds` against `NewCreds` — a net-new credential where none previously existed is higher risk than a modification to an existing one.
+**Analyst note**: Inspect `NewCreds` for the issuer URL and subject claim. A legitimate federation points to a known IdP (`token.actions.githubusercontent.com`, a known Kubernetes cluster OIDC endpoint, etc.) with a specific, narrow subject claim. A broad subject wildcard or an unknown issuer URL is the key indicator. Also compare `OldCreds` against `NewCreds` - a net-new credential where none previously existed is higher risk than a modification to an existing one.
 
 ## Investigation Steps
 
 1. Parse `NewCreds` to extract `issuer`, `subject`, and `audiences` from the JSON array
-2. Verify the issuer is a known, trusted OIDC endpoint — unknown issuers require immediate escalation
+2. Verify the issuer is a known, trusted OIDC endpoint - unknown issuers require immediate escalation
 3. Check whether the subject claim is specific (e.g., `repo:org/repo:ref:refs/heads/main`) or permissive (wildcards, broad patterns)
 4. Identify what permissions the target SP holds: Entra ID portal > Enterprise applications > [SP name] > Permissions
 5. Check `AADServicePrincipalSignInLogs` for sign-ins using this SP after the federated credential was added: `AADServicePrincipalSignInLogs | where ServicePrincipalId == "<sp-id>" | where TimeGenerated > <cred-add-time>`

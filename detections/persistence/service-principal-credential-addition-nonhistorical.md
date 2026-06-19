@@ -1,12 +1,12 @@
 # Service Principal Credential Addition by Non-Historical Actor
 
 ## Technique
-**MITRE ATT&CK**: [T1098.001 — Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/001/)  
+**MITRE ATT&CK**: [T1098.001 - Additional Cloud Credentials](https://attack.mitre.org/techniques/T1098/001/)  
 **Tactic**: Persistence
 
 ## What the attacker is doing
 
-After establishing initial access in an Entra ID tenant — through a compromised admin account, a vulnerable application, or an over-permissioned service principal — an attacker adds a new password credential or X.509 certificate to an existing Service Principal. This gives them a stable long-term foothold that:
+After establishing initial access in an Entra ID tenant - through a compromised admin account, a vulnerable application, or an over-permissioned service principal - an attacker adds a new password credential or X.509 certificate to an existing Service Principal. This gives them a stable long-term foothold that:
 
 - Survives the victim user's password reset
 - Is not tied to any human account subject to MFA or Conditional Access
@@ -17,11 +17,11 @@ This technique was used in Midnight Blizzard's 2023 Microsoft breach and is a do
 
 ## Why standard detections miss it
 
-The `Add service principal credentials` operation appears in AuditLogs regularly in any mature tenant — developers rotate secrets, CI/CD pipelines add deployment keys, automation accounts refresh certificates. Most SIEM rules alert on the operation unconditionally, generating enough noise that analysts suppress or tune it out.
+The `Add service principal credentials` operation appears in AuditLogs regularly in any mature tenant - developers rotate secrets, CI/CD pipelines add deployment keys, automation accounts refresh certificates. Most SIEM rules alert on the operation unconditionally, generating enough noise that analysts suppress or tune it out.
 
 The signal is not the operation itself but **who performed it**. In most tenants, the set of identities that legitimately manage SP credentials is small and stable: a handful of Application Administrators, DevOps service accounts, and the SP owners themselves. An actor outside that set performing this operation is anomalous.
 
-This detection baselines the initiating identity over 90 days. DormantServicePrincipalUpdateCredsandLogsIn in the same repo baselines the SP object — both are useful, and both should be in your hunting queue.
+This detection baselines the initiating identity over 90 days. DormantServicePrincipalUpdateCredsandLogsIn in the same repo baselines the SP object - both are useful, and both should be in your hunting queue.
 
 ## Detection
 
@@ -77,7 +77,7 @@ AuditLogs
 - Infrastructure migrations where a new automation account takes over SP management
 - Legitimate key rotation by a vendor or MSP that rotates on an infrequent schedule (less often than the 90-day lookback window)
 
-**Analyst note**: Check the actor's role assignments in Entra ID and when those roles were assigned. An actor who was granted Application Administrator within the last 24 hours and immediately added credentials to a high-privilege SP is a strong IOC. Also check the target SP's permissions — SPs with Directory.ReadWrite.All, RoleManagement.ReadWrite.Directory, or access to production infrastructure are the highest-value targets.
+**Analyst note**: Check the actor's role assignments in Entra ID and when those roles were assigned. An actor who was granted Application Administrator within the last 24 hours and immediately added credentials to a high-privilege SP is a strong IOC. Also check the target SP's permissions - SPs with Directory.ReadWrite.All, RoleManagement.ReadWrite.Directory, or access to production infrastructure are the highest-value targets.
 
 ## Investigation Steps
 
@@ -85,7 +85,7 @@ AuditLogs
 2. Review what permissions the SP holds: check App Roles and OAuth2PermissionGrants in Entra ID
 3. Determine when the actor was granted admin roles and whether the timing correlates with the credential addition
 4. Check for sign-ins using the SP's new credentials in `AADServicePrincipalSignInLogs` within hours of the addition
-5. If the SP is cloud-only and the credential was a password (not a cert), treat with high suspicion — legitimate CI/CD pipelines overwhelmingly prefer certificates or Managed Identities
+5. If the SP is cloud-only and the credential was a password (not a cert), treat with high suspicion - legitimate CI/CD pipelines overwhelmingly prefer certificates or Managed Identities
 
 ## References
 

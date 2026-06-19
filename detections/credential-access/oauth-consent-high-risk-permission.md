@@ -1,12 +1,12 @@
 # OAuth Consent to High-Risk Permission
 
 ## Technique
-**MITRE ATT&CK**: [T1528 — Steal Application Access Token](https://attack.mitre.org/techniques/T1528/)  
+**MITRE ATT&CK**: [T1528 - Steal Application Access Token](https://attack.mitre.org/techniques/T1528/)  
 **Tactic**: Credential Access, Initial Access
 
 ## What the attacker is doing
 
-An attacker registers a malicious OAuth application in their own tenant and sends a crafted consent URL to a target user — typically via phishing email or a compromised website. When the user clicks "Accept", they grant the attacker's app delegated access to their mailbox, files, or directory without ever entering their password again.
+An attacker registers a malicious OAuth application in their own tenant and sends a crafted consent URL to a target user - typically via phishing email or a compromised website. When the user clicks "Accept", they grant the attacker's app delegated access to their mailbox, files, or directory without ever entering their password again.
 
 The attacker now has a persistent OAuth access token that:
 - Survives password resets (tokens are issued, not credential-based after consent)
@@ -17,8 +17,8 @@ The attacker now has a persistent OAuth access token that:
 Dangerous permissions targeted in real campaigns:
 | Permission | What an attacker can do |
 |-----------|------------------------|
-| `Mail.ReadWrite` | Read, move, delete all email — exfil and cover tracks |
-| `Mail.Send` | Send as the victim — BEC, internal phishing |
+| `Mail.ReadWrite` | Read, move, delete all email - exfil and cover tracks |
+| `Mail.Send` | Send as the victim - BEC, internal phishing |
 | `Files.ReadWrite.All` | Full access to all SharePoint and OneDrive files |
 | `full_access_as_app` | Exchange full mailbox access |
 | `Directory.ReadWrite.All` | Modify users, groups, and roles |
@@ -26,7 +26,7 @@ Dangerous permissions targeted in real campaigns:
 
 ## Why standard detections miss it
 
-The existing broad end-user consent rule (`azure_app_end_user_consent`) fires on **every** consent event at low severity — including employees installing legitimate productivity apps. Analysts stop paying attention to low-severity consent alerts within days of deployment.
+The existing broad end-user consent rule (`azure_app_end_user_consent`) fires on **every** consent event at low severity - including employees installing legitimate productivity apps. Analysts stop paying attention to low-severity consent alerts within days of deployment.
 
 This detection fires only when the consented scope includes a permission from the high-risk list, raising severity to high and cutting noise by 95%+ in most environments.
 
@@ -116,7 +116,7 @@ level: high
 - Enterprise applications legitimately requiring broad mailbox access (e.g., compliance archiving tools, legal hold platforms)
 - IT-approved productivity integrations reviewed through a formal application governance process
 
-**Analyst note**: Always check if the app is registered in your tenant or is a third-party app. Internal apps consenting to broad permissions are lower risk than external ones. Check the app's first-seen date in Entra ID — apps registered in the last 7 days consenting to these scopes are near-certain IOCs.
+**Analyst note**: Always check if the app is registered in your tenant or is a third-party app. Internal apps consenting to broad permissions are lower risk than external ones. Check the app's first-seen date in Entra ID - apps registered in the last 7 days consenting to these scopes are near-certain IOCs.
 
 ## Investigation Steps
 

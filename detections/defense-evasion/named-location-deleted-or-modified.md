@@ -1,12 +1,12 @@
 # Named Location Deleted or Modified
 
 ## Technique
-**MITRE ATT&CK**: [T1562.001 — Impair Defenses: Disable or Modify Tools](https://attack.mitre.org/techniques/T1562/001/)  
+**MITRE ATT&CK**: [T1562.001 - Impair Defenses: Disable or Modify Tools](https://attack.mitre.org/techniques/T1562/001/)  
 **Tactic**: Defense Evasion
 
 ## What the attacker is doing
 
-Named locations are IP range or country definitions that Conditional Access policies use as conditions. A CA policy that blocks sign-ins from outside trusted IP ranges is completely neutralized if the named location definition is modified to include the attacker's IP range — or deleted entirely.
+Named locations are IP range or country definitions that Conditional Access policies use as conditions. A CA policy that blocks sign-ins from outside trusted IP ranges is completely neutralized if the named location definition is modified to include the attacker's IP range - or deleted entirely.
 
 This is a more subtle attack than disabling the CA policy directly because:
 - The CA policy object itself remains enabled and visible in monitoring dashboards

@@ -1,14 +1,14 @@
 # Anomalous Non-Interactive Token Issuance After Interactive Sign-In (AiTM Pattern)
 
 ## Technique
-**MITRE ATT&CK**: [T1539 — Steal Web Session Cookie](https://attack.mitre.org/techniques/T1539/) | [T1550 — Use Alternate Authentication Material](https://attack.mitre.org/techniques/T1550/)  
+**MITRE ATT&CK**: [T1539 - Steal Web Session Cookie](https://attack.mitre.org/techniques/T1539/) | [T1550 - Use Alternate Authentication Material](https://attack.mitre.org/techniques/T1550/)  
 **Tactic**: Credential Access, Initial Access
 
 ## What the attacker is doing
 
 In an AiTM (Adversary-in-the-Middle) phishing attack, the victim is directed to a reverse proxy that sits between them and a legitimate Microsoft login page. The victim completes real MFA against the real IdP. The proxy captures the session cookie issued on successful authentication.
 
-The attacker then replays that cookie from their own infrastructure. From Entra ID's perspective, this looks like a non-interactive sign-in from a new IP — no password, no MFA challenge, because the session was already established.
+The attacker then replays that cookie from their own infrastructure. From Entra ID's perspective, this looks like a non-interactive sign-in from a new IP - no password, no MFA challenge, because the session was already established.
 
 The pattern this detection targets:
 
@@ -21,9 +21,9 @@ This IP and ASN divergence within a 10-minute window is the fingerprint of a sto
 
 Most sign-in anomaly detections look at each sign-in event in isolation and compare it to a historical baseline for the user. AiTM token replay passes those checks because:
 
-- No brute force, no spray — single successful sign-in
+- No brute force, no spray - single successful sign-in
 - Token is valid (was issued against real credentials + MFA)
-- Non-interactive sign-ins often have lower signal fidelity in SIEM pipelines — many environments ingest SigninLogs but not AADNonInteractiveUserSignInLogs
+- Non-interactive sign-ins often have lower signal fidelity in SIEM pipelines - many environments ingest SigninLogs but not AADNonInteractiveUserSignInLogs
 - The time gap (under 10 minutes) is short enough that velocity rules don't fire
 
 This detection joins the two log streams with a tight correlation window, making the IP/ASN divergence the signal rather than raw sign-in failure counts.
@@ -82,12 +82,12 @@ AADNonInteractiveUserSignInLogs
 - Users who connect interactively over a corporate VPN and then a background sync process reconnects over a split-tunnel or mobile data connection in the same window
 - Automated pipelines that trigger token refreshes immediately after a user interactive sign-in from a different service node
 
-**Analyst note**: The most reliable triage signal is the ASN. Legitimate roaming within the same carrier rarely changes ASN in under 10 minutes. An interactive sign-in from a residential ISP followed by a non-interactive token from a cloud hosting provider (AWS, Hetzner, DigitalOcean, OVH) is the classic AiTM fingerprint. Also check `AppDisplayName` — if the non-interactive token was issued to Exchange Online or SharePoint and the user did not use those apps interactively, treat it as high confidence.
+**Analyst note**: The most reliable triage signal is the ASN. Legitimate roaming within the same carrier rarely changes ASN in under 10 minutes. An interactive sign-in from a residential ISP followed by a non-interactive token from a cloud hosting provider (AWS, Hetzner, DigitalOcean, OVH) is the classic AiTM fingerprint. Also check `AppDisplayName` - if the non-interactive token was issued to Exchange Online or SharePoint and the user did not use those apps interactively, treat it as high confidence.
 
 ## Investigation Steps
 
 1. Confirm the interactive sign-in IP belongs to the user's known location or ISP
-2. Geolocate and ASN-lookup the non-interactive IP — hosting providers are strong IOC
+2. Geolocate and ASN-lookup the non-interactive IP - hosting providers are strong IOC
 3. Review post-token activity: email forwarding rule creation, file downloads, inbox rule modifications via Unified Audit Log
 4. Check if the user received a phishing email within 30 minutes before `InteractiveTime`
 5. If confirmed: revoke all sessions (`Revoke-AzureADUserAllRefreshTokens` or Entra ID > User > Revoke sessions), reset password, review MFA methods for attacker-added authenticators
