@@ -64,7 +64,7 @@ detection:
 level: medium
 ```
 
-**Contributed**: [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) · [SigmaHQ/sigma#6012](https://github.com/SigmaHQ/sigma/pull/6012)
+**Contributed**: [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240)
 
 ## False Positives
 

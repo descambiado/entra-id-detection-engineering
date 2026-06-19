@@ -38,7 +38,7 @@ detection:
 level: high
 ```
 
-**Contributed**: [SigmaHQ/sigma#6012](https://github.com/SigmaHQ/sigma/pull/6012)
+**Authored here**: vendor-neutral Sigma rule (proposed to SigmaHQ, not merged)
 
 ### KQL (Microsoft Sentinel)
 

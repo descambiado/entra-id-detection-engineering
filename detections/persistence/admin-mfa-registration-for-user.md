@@ -75,7 +75,7 @@ detection:
 level: high
 ```
 
-**Contributed**: [SigmaHQ/sigma#6012](https://github.com/SigmaHQ/sigma/pull/6012)
+**Contributed**: [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262)
 
 ## False Positives
 
