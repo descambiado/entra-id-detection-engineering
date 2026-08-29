@@ -2,10 +2,10 @@
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/descambiado/entra-id-detection-engineering?style=flat&color=blue)
 ![GitHub last commit](https://img.shields.io/github/last-commit/descambiado/entra-id-detection-engineering?style=flat)
-![Azure-Sentinel PRs merged](https://img.shields.io/badge/Azure--Sentinel%20PRs%20merged-16-brightgreen?style=flat)
+![Azure-Sentinel PRs merged](https://img.shields.io/badge/Azure--Sentinel%20PRs%20merged-19-brightgreen?style=flat)
 ![Elastic rules merged](https://img.shields.io/badge/Elastic%20rules%20merged-3-brightgreen?style=flat)
-![Detections](https://img.shields.io/badge/detections-27-orange?style=flat)
-![MITRE techniques](https://img.shields.io/badge/MITRE%20techniques-11-red?style=flat)
+![Detections](https://img.shields.io/badge/detections-33-orange?style=flat)
+![MITRE techniques](https://img.shields.io/badge/MITRE%20techniques-12-red?style=flat)
 
 Detection content for Microsoft Entra ID (Azure AD) threat scenarios - KQL hunting queries for Microsoft Sentinel and vendor-neutral SIGMA rules covering the full identity attack lifecycle.
 
@@ -28,12 +28,13 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 | T1528 | Steal Application Access Token | [OAuth consent to high-risk permission](detections/credential-access/oauth-consent-high-risk-permission.md), [High-privilege app role assigned to SP](detections/persistence/application-app-role-assigned-high-privilege.md), [SP credential addition followed by immediate sign-in](detections/credential-access/service-principal-credential-then-signin.md), [OAuth application redirect URI modified](detections/credential-access/application-redirect-uri-modified.md) |
 | T1539 | Steal Web Session Cookie | [Anomalous token issuance after AiTM](detections/credential-access/anomalous-token-issuance-aitm.md) |
 | T1550 | Use Alternate Authentication Material | [Anomalous token issuance after AiTM](detections/credential-access/anomalous-token-issuance-aitm.md) |
-| T1556.006 | Modify Authentication Process: Multi-Factor Authentication | [MFA registration from unseen IP](detections/persistence/mfa-registration-from-unseen-ip.md), [Admin MFA registration for user](detections/persistence/admin-mfa-registration-for-user.md), [Authentication methods policy modified](detections/persistence/authentication-methods-policy-modified.md), [Temporary Access Pass created for user](detections/persistence/temporary-access-pass-created.md), [MFA disabled then sign-in from unseen IP](detections/persistence/mfa-disabled-then-signin-unseen-ip.md) |
-| T1098 | Account Manipulation | [Cross-tenant access setting modified](detections/persistence/cross-tenant-access-setting-modified.md), [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md), [Temporary Access Pass created for user](detections/persistence/temporary-access-pass-created.md), [Guest user type changed to member](detections/persistence/guest-user-type-changed-to-member.md) |
+| T1556.006 | Modify Authentication Process: Multi-Factor Authentication | [MFA registration from unseen IP](detections/persistence/mfa-registration-from-unseen-ip.md), [Admin MFA registration for user](detections/persistence/admin-mfa-registration-for-user.md), [Authentication methods policy modified](detections/persistence/authentication-methods-policy-modified.md), [Temporary Access Pass created for user](detections/persistence/temporary-access-pass-created.md), [MFA disabled then sign-in from unseen IP](detections/persistence/mfa-disabled-then-signin-unseen-ip.md), [Break-glass account credentials or MFA modified](detections/persistence/break-glass-account-credentials-modified.md) |
+| T1556.009 | Modify Authentication Process: Conditional Access | [Conditional Access policy exclusion added](detections/defense-evasion/conditional-access-policy-exclusion-added.md) |
+| T1098 | Account Manipulation | [Cross-tenant access setting modified](detections/persistence/cross-tenant-access-setting-modified.md), [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md), [Temporary Access Pass created for user](detections/persistence/temporary-access-pass-created.md), [Guest user type changed to member](detections/persistence/guest-user-type-changed-to-member.md), [Break-glass account credentials or MFA modified](detections/persistence/break-glass-account-credentials-modified.md) |
 | T1098.001 | Additional Cloud Credentials | [SP credential addition by non-historical actor](detections/persistence/service-principal-credential-addition-nonhistorical.md), [SP credential addition followed by immediate sign-in](detections/credential-access/service-principal-credential-then-signin.md), [Service principal owner added](detections/persistence/service-principal-owner-added.md), [SP credential added by freshly privileged user](detections/persistence/fresh-role-granted-actor-sp-credential-added.md), [Federated identity credential added to SP](detections/persistence/service-principal-federated-identity-credential-added.md) |
-| T1098.003 | Additional Cloud Roles | [Guest user added to privileged role](detections/privilege-escalation/guest-user-added-to-privileged-role.md), [Bulk role assignments in short window](detections/privilege-escalation/bulk-role-assignments.md), [Directory role assigned outside PIM](detections/privilege-escalation/directory-role-assigned-outside-pim.md), [High-privilege app role assigned to SP](detections/persistence/application-app-role-assigned-high-privilege.md), [Privileged role assigned to newly created account](detections/persistence/privileged-role-assigned-to-new-account.md) |
+| T1098.003 | Additional Cloud Roles | [Guest user added to privileged role](detections/privilege-escalation/guest-user-added-to-privileged-role.md), [Bulk role assignments in short window](detections/privilege-escalation/bulk-role-assignments.md), [Directory role assigned outside PIM](detections/privilege-escalation/directory-role-assigned-outside-pim.md), [High-privilege app role assigned to SP](detections/persistence/application-app-role-assigned-high-privilege.md), [Privileged role assigned to newly created account](detections/persistence/privileged-role-assigned-to-new-account.md), [Role-assignable group created](detections/privilege-escalation/role-assignable-group-created.md), [Member or owner added to a new role-assignable group](detections/privilege-escalation/member-added-to-new-role-assignable-group.md), [Break-glass account role or group membership changed](detections/persistence/break-glass-account-role-or-group-membership-changed.md) |
 | T1136.003 | Create Account: Cloud Account | [Privileged role assigned to newly created account](detections/persistence/privileged-role-assigned-to-new-account.md) |
-| T1078.004 | Valid Accounts: Cloud Accounts | [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md), [PIM activation outside business hours](detections/defense-evasion/pim-activation-outside-business-hours.md), [Workload identity sign-in from new country](detections/credential-access/workload-identity-sign-in-new-country.md), [MFA disabled then sign-in from unseen IP](detections/persistence/mfa-disabled-then-signin-unseen-ip.md) |
+| T1078.004 | Valid Accounts: Cloud Accounts | [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md), [PIM activation outside business hours](detections/defense-evasion/pim-activation-outside-business-hours.md), [Workload identity sign-in from new country](detections/credential-access/workload-identity-sign-in-new-country.md), [MFA disabled then sign-in from unseen IP](detections/persistence/mfa-disabled-then-signin-unseen-ip.md), [Break-glass account sign-in detected](detections/persistence/break-glass-account-sign-in.md) |
 | T1562.001 | Impair Defenses: Disable or Modify Tools | [Named location deleted or modified](detections/defense-evasion/named-location-deleted-or-modified.md), [Conditional Access policy disabled or deleted](detections/defense-evasion/conditional-access-policy-disabled.md) |
 | T1484.002 | Domain Trust Modification | [Federated domain added to tenant](detections/defense-evasion/federated-domain-added.md) |
 
@@ -57,7 +58,7 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 | Detection | Platform | Severity | PR |
 |-----------|----------|----------|----|
 | [MFA registration from unseen IP](detections/persistence/mfa-registration-from-unseen-ip.md) | Sentinel | Medium | [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) |
-| [Admin registered MFA method for another user](detections/persistence/admin-mfa-registration-for-user.md) | Sentinel + SIGMA | High | [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) |
+| [Admin registered MFA method for another user](detections/persistence/admin-mfa-registration-for-user.md) | Sentinel + SIGMA | High | [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262), [Elastic#6680](https://github.com/elastic/detection-rules/pull/6680) (in review) |
 | [Authentication methods policy modified](detections/persistence/authentication-methods-policy-modified.md) | SIGMA | High | Authored here |
 | [Cross-tenant access setting modified](detections/persistence/cross-tenant-access-setting-modified.md) | SIGMA | High | Authored here |
 | [SP credential addition by non-historical actor](detections/persistence/service-principal-credential-addition-nonhistorical.md) | Sentinel + SIGMA | Medium | [Azure-Sentinel#14276](https://github.com/Azure/Azure-Sentinel/pull/14276) |
@@ -69,6 +70,9 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 | [SP credential added by freshly privileged user](detections/persistence/fresh-role-granted-actor-sp-credential-added.md) | Sentinel | High | [Azure-Sentinel#14311](https://github.com/Azure/Azure-Sentinel/pull/14311) |
 | [Federated identity credential added to service principal](detections/persistence/service-principal-federated-identity-credential-added.md) | Sentinel | Medium | [Azure-Sentinel#14311](https://github.com/Azure/Azure-Sentinel/pull/14311) |
 | [MFA disabled then sign-in from unseen IP](detections/persistence/mfa-disabled-then-signin-unseen-ip.md) | Sentinel | High | [Azure-Sentinel#14311](https://github.com/Azure/Azure-Sentinel/pull/14311) |
+| [Break-glass account sign-in detected](detections/persistence/break-glass-account-sign-in.md) | Sentinel | High | [Azure-Sentinel#14948](https://github.com/Azure/Azure-Sentinel/pull/14948) |
+| [Break-glass account credentials or MFA modified](detections/persistence/break-glass-account-credentials-modified.md) | Sentinel | High | [Azure-Sentinel#14948](https://github.com/Azure/Azure-Sentinel/pull/14948) |
+| [Break-glass account role or group membership changed](detections/persistence/break-glass-account-role-or-group-membership-changed.md) | Sentinel | High | [Azure-Sentinel#14948](https://github.com/Azure/Azure-Sentinel/pull/14948) |
 
 ### Privilege Escalation
 
@@ -78,15 +82,18 @@ The focus is **Entra ID** because it is the single most targeted component in mo
 | [Bulk role assignments in short window](detections/privilege-escalation/bulk-role-assignments.md) | Sentinel | Medium | [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) |
 | [Sign-in from new country with sensitive operation](detections/privilege-escalation/sign-in-new-country-sensitive-operation.md) | Sentinel | High | [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) |
 | [Directory role assigned outside PIM workflow](detections/privilege-escalation/directory-role-assigned-outside-pim.md) | Sentinel | High | [Azure-Sentinel#14281](https://github.com/Azure/Azure-Sentinel/pull/14281) |
+| [Role-assignable group created](detections/privilege-escalation/role-assignable-group-created.md) | Sentinel + SIGMA | High | [Azure-Sentinel#14789](https://github.com/Azure/Azure-Sentinel/pull/14789) |
+| [Member or owner added to a new role-assignable group](detections/privilege-escalation/member-added-to-new-role-assignable-group.md) | Sentinel + SIGMA | High | [Azure-Sentinel#14789](https://github.com/Azure/Azure-Sentinel/pull/14789) |
 
 ### Defense Evasion
 
 | Detection | Platform | Severity | PR |
 |-----------|----------|----------|----|
-| [Named location deleted or modified](detections/defense-evasion/named-location-deleted-or-modified.md) | Sentinel + SIGMA | Medium | [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) |
+| [Named location deleted or modified](detections/defense-evasion/named-location-deleted-or-modified.md) | Sentinel + SIGMA | Medium | [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240), [Elastic#6691](https://github.com/elastic/detection-rules/pull/6691) (in review) |
 | [Conditional Access policy disabled or deleted](detections/defense-evasion/conditional-access-policy-disabled.md) | Sentinel | High | [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) |
 | [PIM role activation outside business hours](detections/defense-evasion/pim-activation-outside-business-hours.md) | Sentinel | Medium | [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) |
 | [Federated domain added to tenant (Golden SAML)](detections/defense-evasion/federated-domain-added.md) | Sentinel | High | [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) |
+| [Conditional Access policy exclusion added](detections/defense-evasion/conditional-access-policy-exclusion-added.md) | Sentinel | Medium | [Azure-Sentinel#14789](https://github.com/Azure/Azure-Sentinel/pull/14789) |
 
 ---
 
@@ -104,7 +111,7 @@ Every detection in this repo follows the same process:
 
 ## Contributions
 
-### Azure/Azure-Sentinel (16 PRs merged)
+### Azure/Azure-Sentinel (19 PRs merged)
 
 | PR | Description | Status |
 |----|-------------|--------|
@@ -124,12 +131,17 @@ Every detection in this repo follows the same process:
 | [#14335](https://github.com/Azure/Azure-Sentinel/pull/14335) | Account takeover hunting pack: device code phishing, new SP + admin consent, bulk password reset (3 queries) | Merged May 27, 2026 |
 | [#14336](https://github.com/Azure/Azure-Sentinel/pull/14336) | BadUSB PowerShell Run dialog hunting query (HID injection, DeviceProcessEvents) | Merged May 27, 2026 |
 | [#14339](https://github.com/Azure/Azure-Sentinel/pull/14339) | Auth anomaly and privilege abuse hunting pack: legacy auth sign-in, guest initiator, password reset pivot (3 queries) | Merged May 27, 2026 |
+| [#14600](https://github.com/Azure/Azure-Sentinel/pull/14600) | BadUSB LOLBIN execution via certutil (Run dialog) | Merged July 3, 2026 |
+| [#14789](https://github.com/Azure/Azure-Sentinel/pull/14789) | Entra ID group role assignment hunting pack: role-assignable group creation, member/owner added, CA policy exclusion (3 queries) | Merged July 31, 2026 |
+| [#14948](https://github.com/Azure/Azure-Sentinel/pull/14948) | Break-glass account hunting pack: sign-in, credential/MFA change, role or group membership change (3 queries) | Merged August 24, 2026 |
 
-### elastic/detection-rules (3 rules merged)
+### elastic/detection-rules (3 rules merged, 2 in review)
 
 | PR | Description | Status |
 |----|-------------|--------|
 | [#6168](https://github.com/elastic/detection-rules/pull/6168) | Entra ID identity attack rules: TAP creation, guest-to-member, OAuth redirect URI (3 rules) | Merged June 18, 2026 |
+| [#6680](https://github.com/elastic/detection-rules/pull/6680) | Entra ID admin-registered MFA method for another user | In review (opened Aug 20, 2026) |
+| [#6691](https://github.com/elastic/detection-rules/pull/6691) | Entra ID named location deleted or modified | In review (opened Aug 24, 2026) |
 
 ### splunk/security_content
 
@@ -137,9 +149,16 @@ Every detection in this repo follows the same process:
 |----|-------------|--------|
 | [#4091](https://github.com/splunk/security_content/pull/4091) | Azure AD Entra ID identity attack detections: TAP creation, guest-to-member, federated identity credential (3 analytics) | In review |
 
+### SigmaHQ/sigma
+
+| PR | Description | Status |
+|----|-------------|--------|
+| [#6243](https://github.com/SigmaHQ/sigma/pull/6243) | Administrator Changed Authentication Method Of Another User | In review |
+| [#6247](https://github.com/SigmaHQ/sigma/pull/6247) | Fix: Added Credentials to Existing Application (en-dash character bug on a production 2022 rule, found via this repo's own tenant validation) | Approved, pending merge |
+
 ### Sigma rules (vendor-neutral, authored here)
 
-Several detections in this repo also include a vendor-neutral Sigma version. These were proposed upstream to SigmaHQ but not merged; the canonical copies live in this repository under the relevant `detections/` folders.
+Several detections in this repo also include a vendor-neutral Sigma version, authored here and never submitted upstream; the canonical copies live in this repository under the relevant `detections/` folders. Separately, two real contributions to SigmaHQ/sigma are tracked in the table above: #6243 is a native rule submission covering the same admin-initiated MFA/security-info-change technique as this repo's `admin-mfa-registration-for-user.md`, written directly against SigmaHQ's own schema rather than copied from here; #6247 is a two-line fix to an existing 2022 rule authored by Microsoft's identity team, found through this repo's own tenant validation work, not a rule authored in this repository.
 
 ---
 

@@ -64,7 +64,19 @@ detection:
 level: medium
 ```
 
-**Contributed**: [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240)
+**Contributed**: [Azure-Sentinel#14240](https://github.com/Azure/Azure-Sentinel/pull/14240) (merged)
+
+**Validation, 2026-08-23.** Ran the operation live in a real Entra ID tenant (Microsoft Entra ID P2 trial) to
+confirm the shape instead of writing from documentation alone: created, updated and deleted a named IP-range
+location. All three operations logged as `Category: Policy`, actor and app correctly attributed, and the
+`TargetResources.modifiedProperties` shape for `NamedLocation` matches this detection's assumptions
+(`displayName`, `ipRanges`, `isTrusted`, old/new value diff on update). Confirmed no equivalent rule exists in
+elastic/detection-rules -- the only Conditional Access rule there only fires on `Update conditional access
+policy`, never on a named location change.
+
+**Contributed: elastic/detection-rules#6691** (opened 2026-08-24, superseding the earlier hold-and-wait
+decision from 2026-08-20 -- David chose to open it rather than wait for the other 4 PRs to get reviewed
+first).
 
 ## False Positives
 

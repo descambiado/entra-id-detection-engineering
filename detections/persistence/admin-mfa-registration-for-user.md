@@ -75,7 +75,9 @@ detection:
 level: high
 ```
 
-**Contributed**: [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262)
+**Contributed**: [Azure-Sentinel#14262](https://github.com/Azure/Azure-Sentinel/pull/14262) (merged)
+
+**Contributed: elastic/detection-rules#6680** (opened 2026-08-20, in review). Same detection logic ported to Elastic's EQL, validated against the same admin-registered-MFA event captured live in this repo's own Entra ID tenant rather than written from documentation alone.
 
 ## False Positives
 
