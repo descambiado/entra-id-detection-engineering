@@ -1,0 +1,21 @@
+# Secrets. Never commit tenant credentials.
+.env
+lab/.env
+*.env
+!lab/.env.example
+
+# Captured audit events may contain tenant identifiers, user principal names,
+# IP addresses and correlation ids. Keep them local unless deliberately
+# redacted for a write-up.
+lab/captures/
+*.capture.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
