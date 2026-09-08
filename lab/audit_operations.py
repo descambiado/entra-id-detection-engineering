@@ -11,7 +11,14 @@ that is not in that list cannot fire, and no event is needed to know it.
 
 Verdicts:
   EXACT      the value is in Microsoft's list verbatim
-  CASE       matches only when case is ignored
+  CASE       matches only when case is ignored. NOT A FINDING, verified
+             2026-09-08: the pySigma kusto backend emits `=~`, which is case
+             insensitive in KQL, so 'conditional access policy' does match
+             'Conditional Access policy'. Confirmed by converting a rule and
+             reading the operator, and separately by querying a live workspace
+             where `== 'add member to group'` returns 0 and `=~` returns 1.
+             Reported for completeness only. Six of these were nearly written
+             up as findings before the check was run.
   WHITESPACE matches only after stripping, so the rule carries stray spacing
   DASH       matches only after normalising dash characters
   ABSENT     no match under any of the above. The interesting bucket.
