@@ -21,7 +21,24 @@ Verdicts:
              up as findings before the check was run.
   WHITESPACE matches only after stripping, so the rule carries stray spacing
   DASH       matches only after normalising dash characters
-  ABSENT     no match under any of the above. The interesting bucket.
+  ABSENT     no match under any of the above.
+
+IMPORTANT, learned the hard way on 2026-09-08 and the reason this docstring is
+long: ABSENT IS A CANDIDATE, NOT A FINDING. Microsoft's published audit activity
+reference is INCOMPLETE. `Add eligible member (permanent)` does not appear in it,
+yet Microsoft's own Sentinel analytic rule UserAddedtoAdminRole.yaml queries
+`OperationName in ("Add eligible member (permanent)", "Add eligible member
+(eligible)", "Add member to role")`. So the operation almost certainly exists and
+the reference simply does not list it.
+
+Four rules were about to be written up as broken on ABSENT alone. Checking
+Microsoft's own detection content first stopped that. Absence from the list
+proves nothing on its own; presence in it proves the string is real.
+
+An ABSENT result is promoted to a finding only by an executed test: generate the
+event and show the rule's string returns nothing while the real one returns the
+row. That is how `Add member from group` was confirmed, and it is the only one of
+the five candidates that has been.
 
 ABSENT is not automatically a bug. A partial value behind |contains is meant to
 be a fragment, and a rule may target an operation Microsoft has not documented.
