@@ -79,3 +79,7 @@ Whether the rule fires depends on the backend resolving `properties.message` at 
 separate convention question this repository's audit deliberately excludes. The finding here is
 narrower and survives that question: **whatever field it resolves to, the value it compares against
 is not a string Entra emits.**
+
+---
+
+Tool versions, environment and re-run instructions: [PROVENANCE.md](PROVENANCE.md)

@@ -59,3 +59,7 @@ and rejecting exactly the ones that are misspelled or absent.
 az login
 bash lab/validate_kql.sh
 ```
+
+---
+
+Tool versions, environment and re-run instructions: [PROVENANCE.md](PROVENANCE.md)

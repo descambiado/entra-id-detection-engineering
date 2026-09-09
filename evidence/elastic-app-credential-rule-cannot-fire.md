@@ -84,3 +84,7 @@ covers that operation at all.** That is a coverage gap, independent of this stri
 az login
 bash lab/decisive_dash_test.sh
 ```
+
+---
+
+Tool versions, environment and re-run instructions: [PROVENANCE.md](PROVENANCE.md)

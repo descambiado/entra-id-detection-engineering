@@ -65,3 +65,7 @@ Microsoft documents. During the wait the hypothesis "Spain Central is a new regi
 not support" was raised and tested with a second workspace in North Europe. **That hypothesis was
 wrong.** Both regions received data within two minutes of each other. The delay was first-time export
 setup, nothing else.
+
+---
+
+Tool versions, environment and re-run instructions: [PROVENANCE.md](PROVENANCE.md)
