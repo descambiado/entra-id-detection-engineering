@@ -19,6 +19,7 @@ import audit_operations as ops
 import audit_rules as rules
 import audit_activitylogs as act
 import infer_tables as inf
+import audit_signinlogs as sig
 
 HERE = pathlib.Path(__file__).parent
 
@@ -131,6 +132,35 @@ class TableInference(unittest.TestCase):
 
     def test_nested_path_reduces_to_its_root(self):
         self.assertEqual(inf.base_of("DeviceDetail.trusttype"), "DeviceDetail")
+
+
+class SigninLogsAuditor(unittest.TestCase):
+    """The signinlogs auditor checks field names, not operation names, because
+    these rules select on result codes instead."""
+
+    def test_convention_check_sees_the_name_as_written(self):
+        """A bug this tool shipped with for one run: the properties. prefix was
+        stripped before the CONVENTIONS lookup, so properties.message arrived as
+        'message', missed the exclusion and reported ABSENT. The tool was
+        contradicting its own docstring."""
+        root, written = sig.root_of("properties.message")
+        self.assertEqual(written, "properties.message")
+        self.assertIn(written, sig.CONVENTIONS)
+
+    def test_root_is_still_extracted_for_the_column_lookup(self):
+        root, _ = sig.root_of("properties.deviceDetail.deviceId|expand")
+        self.assertEqual(root, "deviceDetail")
+
+    def test_event_hub_envelope_names_are_conventions_not_defects(self):
+        """One rule uses callerIpAddress, location, resultType and
+        properties.deviceDetail.deviceId together. That is the Event Hub
+        envelope used consistently, not four mistakes."""
+        self.assertIn("callerIpAddress", sig.CONVENTIONS)
+
+    def test_the_signinlogs_schema_is_the_one_being_checked_against(self):
+        self.assertGreater(len(sig.COLS), 50)
+        self.assertIn("ResultType", sig.COLS)
+        self.assertNotIn("Username", sig.COLS)
 
 
 class ReferenceData(unittest.TestCase):

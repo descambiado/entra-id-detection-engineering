@@ -255,16 +255,17 @@ row, and keep both queries.
 | `audit_operations.py` | do these operation names exist in Entra's catalogue | no |
 | `audit_activitylogs.py` | do these operation names exist in Azure's ARM catalogue | no |
 | `audit_elastic_ops.py` | same question against elastic/detection-rules | no |
+| `audit_signinlogs.py` | do these field names exist, and which result codes are used | no |
 | `validate_kql.sh` | does the engine accept these fields at all | yes |
 | `decisive_dash_test.sh` | what characters does the export actually emit | yes |
 | `match_rule.py` | does this rule fire against a captured event | events only |
 | `test_match_rule.py` | does the matcher still behave, 10 regression tests | no |
-| `test_auditors.py` | are the four traps above still guarded, 18 regression tests | no |
+| `test_auditors.py` | are the four traps above still guarded, 22 regression tests | no |
 
 ## Running the tests
 
 ```bash
-py -m unittest discover -s lab -p "test_*.py"    # 28 tests
+py -m unittest discover -s lab -p "test_*.py"    # 32 tests
 ```
 
 Each of the four traps above is a test rather than only a paragraph. A trap
@@ -294,10 +295,18 @@ is evidence.
 
 ## What the suite found, and what it did not
 
-Across **81 of the 131** Azure rules in SigmaHQ that declare a logsource service, plus all **136**
-rule files in elastic/detection-rules. The 81 are `auditlogs` (46) and `activitylogs` (35); the
-remaining 50 are `signinlogs` (24), which select on result codes rather than operation names and need
-a different check, and `riskdetection` (19) plus `pim` (7), which are out of scope:
+**The corpus is closed.** All **105** Azure rules in SigmaHQ that an audit can say anything about,
+plus all **136** rule files in elastic/detection-rules:
+
+| Service | Rules | Status |
+|---|---|---|
+| `auditlogs` | 46 | audited, one confirmed finding and three open candidates |
+| `activitylogs` | 35 | audited, **clean**, 98 of 115 operation values exact and both outliers explained |
+| `signinlogs` | 24 | audited, **clean**, 3 absent field names all in one rule already being fixed upstream |
+| `riskdetection` | 19 | **out of scope**, selects on `riskEventType`, no operation names or column-level fields to check |
+| `pim` | 7 | out of scope, same reason |
+
+That is 131 rules: 105 audited, 26 with nothing an audit of this kind can say. What came out:
 
 - **Confirmed with an executed test:** one, `Add member from group`, an operation Entra does not emit.
 - **Sent as fixes with evidence:** three, two merged or under review in SigmaHQ and one in Elastic.
