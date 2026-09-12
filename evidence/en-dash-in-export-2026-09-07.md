@@ -69,3 +69,30 @@ setup, nothing else.
 ---
 
 Tool versions, environment and re-run instructions: [PROVENANCE.md](PROVENANCE.md)
+
+---
+
+## Addendum 2026-09-12: Microsoft's own documentation is a fourth representation
+
+The audit activity reference at
+`learn.microsoft.com/entra/identity/monitoring-health/reference-audit-activities` lists the operation
+as:
+
+```
+Update application - Certificates and secrets management
+```
+
+**U+002D HYPHEN-MINUS, no trailing space.** That is not what the telemetry emits. The Graph response
+and the diagnostic-settings export both carry U+2013 EN DASH plus a trailing space, measured against
+a live workspace on 2026-09-07.
+
+So Microsoft's documentation disagrees with Microsoft's own logs, and that is a fourth form of the
+same operation name alongside portal, Graph and export.
+
+**This explains the rules rather than excusing them.** Both SigmaHQ's `azure_app_credential_added.yml`
+and Elastic's `persistence_entra_id_application_credential_modification.toml` use the hyphen. Neither
+author was careless: they wrote the value the vendor publishes. The value the vendor publishes is not
+the value the vendor emits.
+
+Worth stating in that framing if this is ever written up, because "two projects copied a wrong string
+from the official reference" is a different and more useful claim than "two projects made a typo".
