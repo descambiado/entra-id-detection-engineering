@@ -1,5 +1,29 @@
 # `azure_group_user_addition_ca_modification.yml` cannot fire
 
+> **CORRECTION, 2026-09-12. This is not an undiscovered finding, and presenting it as one would have
+> been wrong.** SigmaHQ PR #5993, open since 2026-05-09, already fixes it:
+>
+> ```diff
+> -        properties.message: Add member from group
+> +        operationName: Add member to group
+> -    - User removed from the group is approved
+> +    - Added user to the group is approved
+> ```
+>
+> `fukusuket` caught both the operation name **and** the leftover false-positive text, four months
+> before this audit ran. The defect is still live on master because that PR has not merged, but it is
+> known and someone is already on it.
+>
+> **How this was missed:** the #5993 diff had been read three times, for other reasons, and never
+> searched for this specific rule. The audit found the defect independently and nobody checked
+> whether it was already being fixed. That check now belongs in the method: **before writing up any
+> finding, grep the open PRs of that repository for the file name.**
+>
+> **What survives, and it is not nothing:** the executed evidence below. #5993 changes the value on
+> the strength of the documentation. The queries here show the engine returning 0 rows for the old
+> value and 1 row for the new one against a real event, which is the kind of proof that helps a PR
+> that has been sitting for four months. That is a comment on someone else's PR, not a PR of our own.
+
 **Finding date:** 2026-09-08
 **Rule:** `rules/cloud/azure/audit_logs/azure_group_user_addition_ca_modification.yml`
 **Title:** User Added To Group With CA Policy Modification Access
