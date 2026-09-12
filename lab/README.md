@@ -259,6 +259,25 @@ row, and keep both queries.
 | `decisive_dash_test.sh` | what characters does the export actually emit | yes |
 | `match_rule.py` | does this rule fire against a captured event | events only |
 | `test_match_rule.py` | does the matcher still behave, 10 regression tests | no |
+| `test_auditors.py` | are the four traps above still guarded, 18 regression tests | no |
+
+## Running the tests
+
+```bash
+py -m unittest discover -s lab -p "test_*.py"    # 28 tests
+```
+
+Each of the four traps above is a test rather than only a paragraph. A trap
+written down in a README comes back; a trap with a failing test does not. The
+reference-data tests exist for a specific failure mode: if a catalogue silently
+empties or truncates, every verdict flips to ABSENT at once and the report looks
+like a jackpot instead of a bug.
+
+Writing these caught a wrong assumption about this code, which is the point.
+`properties.message` is excluded by `audit_rules.py`, which checks field names,
+and is an accepted *input* to `audit_operations.py`, which checks the values
+behind an operation-name field. Asserting it in the wrong module failed, and the
+distinction is now spelled out in a test.
 
 ## Reference data, and where it came from
 
