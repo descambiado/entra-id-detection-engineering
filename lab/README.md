@@ -201,3 +201,108 @@ py match_rule.py ../sigma/persistence/azure_ad_sp_credentials_added.yml \
 This tool reads audit logs from one tenant: the author's own, used solely to
 validate detection content. It performs no writes and touches no third party
 system.
+
+---
+
+# The audit suite
+
+Everything above validates one rule against events you captured. This part answers a different and
+larger question: **of the detection rules published for Azure, how many cannot fire?**
+
+You do not need a tenant for most of it. You need one only to promote an answer from "probably" to
+"I ran it".
+
+## The four ways this method lies to you
+
+Read this section before the tool list. Every item below produced a wrong answer here first, and
+each one would have been published if it had not been checked.
+
+**1. A field that is a project convention, not a column.** The first run of `audit_rules.py` reported
+27 broken rules in `rules/cloud/azure/audit_logs`. Twenty-three of them were `properties.message`,
+which resolves to no column anywhere and which 23 of the 45 rules use, including one merged after
+maintainer review. It is how the project writes that logsource. Excluding it took the report from 27
+to 8. **A value shared by half the corpus is a convention. Treat it as one.**
+
+**2. Checking rules against the wrong catalogue.** The first run of `audit_operations.py` reported
+128 absent operation names. Most were `activitylogs` rules, whose operations look like
+`MICROSOFT.NETWORK/APPLICATIONGATEWAYS/WRITE` and were never going to appear in a list of Entra audit
+activities. Restricting to `service: auditlogs` took it from 128 to 13. `infer_tables.py` exists so
+the mapping is derived from the rules' own field names rather than assumed.
+
+**3. Case differences that do not matter.** Six rules spell `conditional access policy` where
+Microsoft writes `Conditional Access policy`. KQL `==` is case sensitive, so this looks fatal. The
+pySigma kusto backend emits `=~`, which is not. Verified by converting a rule and reading the
+operator, and again against a live workspace where `== 'add member to group'` returns 0 rows and
+`=~` returns 1. **Not findings.**
+
+**4. The vendor's own list is incomplete, and this is the worst one.** Four rules looked broken
+because their operation names are absent from the 907 activities Microsoft publishes. Then Microsoft's
+own Sentinel analytic rule `UserAddedtoAdminRole.yaml` turned out to query two of those exact strings.
+The list is missing real operations, so **absence from it proves nothing**. It went from four findings
+to one, and the one that survived did so because it had a captured event behind it, not a missing
+entry.
+
+The rule that falls out of all four: **ABSENT is a candidate. Only an executed test makes it a
+finding.** Generate the event, show the rule's value returns nothing where the real value returns the
+row, and keep both queries.
+
+## Tools
+
+| Tool | Question it answers | Needs a tenant |
+|---|---|---|
+| `infer_tables.py` | which Log Analytics table does this Sigma logsource target | no |
+| `audit_rules.py` | do these rules reference fields that exist, graded by certainty | no |
+| `audit_operations.py` | do these operation names exist in Entra's catalogue | no |
+| `audit_activitylogs.py` | do these operation names exist in Azure's ARM catalogue | no |
+| `audit_elastic_ops.py` | same question against elastic/detection-rules | no |
+| `validate_kql.sh` | does the engine accept these fields at all | yes |
+| `decisive_dash_test.sh` | what characters does the export actually emit | yes |
+| `match_rule.py` | does this rule fire against a captured event | events only |
+| `test_match_rule.py` | does the matcher still behave, 10 regression tests | no |
+
+## Reference data, and where it came from
+
+| File | Contents | Source |
+|---|---|---|
+| `ms_audit_activities.json` | 907 Entra audit activity names | Microsoft's audit activity reference. The raw page is kept beside it as `.raw.txt` so the extraction can be rechecked rather than trusted |
+| `arm_operations.txt` | 2045 ARM operations | `az provider operation show`, pulled live for the 8 providers the rules reference |
+| `azure_schema.json` | 698 Log Analytics table schemas | the installed pySigma azuremonitor pipeline, not typed from documentation |
+
+**Both catalogues are known incomplete.** `Add eligible member (permanent)` is missing from the Entra
+list. `Microsoft.Authorization/elevateAccess/action` is missing from the ARM one, almost certainly
+because that command returns subscription-scope operations and this is tenant-scope. Neither absence
+is evidence.
+
+## What the suite found, and what it did not
+
+Across **81 of the 131** Azure rules in SigmaHQ that declare a logsource service, plus all **136**
+rule files in elastic/detection-rules. The 81 are `auditlogs` (46) and `activitylogs` (35); the
+remaining 50 are `signinlogs` (24), which select on result codes rather than operation names and need
+a different check, and `riskdetection` (19) plus `pim` (7), which are out of scope:
+
+- **Confirmed with an executed test:** one, `Add member from group`, an operation Entra does not emit.
+- **Sent as fixes with evidence:** three, two merged or under review in SigmaHQ and one in Elastic.
+- **Open candidates, not claimed:** three, listed in `../evidence/CANDIDATES-not-confirmed.md` with
+  what would settle each.
+- **Discarded after checking:** four sets, described above.
+
+`activitylogs` came back **completely clean**, 98 of 115 operation values exact and both outliers
+explained. `riskdetection` and `pim` are out of scope rather than unchecked: every one of their rules
+selects on `riskEventType` and none uses an operation name.
+
+Zero findings in a folder is a result worth publishing. It bounds the problem instead of leaving it
+open.
+
+## Honest limits
+
+- This checks whether a rule **can** match. It says nothing about whether the logic is good, whether
+  the detection is worth having, or whether it would be noisy.
+- It only reaches rules that select on field names and operation names. Rules built on thresholds,
+  correlation or aggregation are outside it.
+- Field resolution is checked against the Log Analytics representation, which is what Microsoft
+  Sentinel queries. A rule targeting a different backend may resolve differently.
+- The objection that this does not answer, raised publicly by another practitioner and still
+  standing: generating events only validates the operations you thought to generate. The catalogue
+  checks close part of that gap because they scale to the whole corpus, but a field that exists and
+  holds a value spelled differently still needs a real event, and that is where the interesting bugs
+  live.
