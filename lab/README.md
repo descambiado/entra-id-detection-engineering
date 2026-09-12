@@ -243,7 +243,14 @@ to one, and the one that survived did so because it had a captured event behind 
 entry.
 
 The rule that falls out of all four: **ABSENT is a candidate. Only an executed test makes it a
-finding.** Generate the event, show the rule's value returns nothing where the real value returns the
+finding.**
+
+**And a fifth, added 2026-09-12, which is about process rather than the tools.** The one defect this
+audit confirmed with an executed test turned out to be already fixed in an open PR that had been
+waiting since May. The diff of that PR had been read three times that week and never searched for the
+file name. **Before writing up any finding, grep the open PRs of that repository for the file.** An
+independent confirmation of someone else's known bug is a useful comment on their PR. It is not your
+finding. Generate the event, show the rule's value returns nothing where the real value returns the
 row, and keep both queries.
 
 ## Tools
@@ -309,6 +316,9 @@ plus all **136** rule files in elastic/detection-rules:
 That is 131 rules: 105 audited, 26 with nothing an audit of this kind can say. What came out:
 
 - **Confirmed with an executed test:** one, `Add member from group`, an operation Entra does not emit.
+  **Already being fixed by someone else.** SigmaHQ PR #5993 has corrected it since 2026-05-09 and
+  this audit did not check before writing it up. See the correction at the top of
+  `../evidence/sigma-add-member-from-group.md`.
 - **Sent as fixes with evidence:** three, two merged or under review in SigmaHQ and one in Elastic.
 - **Open candidates, not claimed:** three, listed in `../evidence/CANDIDATES-not-confirmed.md` with
   what would settle each.
