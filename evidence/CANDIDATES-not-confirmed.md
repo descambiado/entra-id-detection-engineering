@@ -44,6 +44,25 @@ under the Entra `auditlogs` logsource. **Still a candidate:** elevating access i
 operation and was not performed to test this. Neither value appears anywhere in Azure-Sentinel,
 elastic/detection-rules or the rest of SigmaHQ.
 
+**Corroborated in the opposite direction on 2026-09-12, and this is the strongest evidence yet short
+of an event.** Microsoft ships its own rule for this exact detection,
+`Solutions/Microsoft Entra ID/Analytic Rules/AzureRBAC.yaml`, and it reads:
+
+```kql
+AuditLogs
+| where Category =~ "AzureRBACRoleManagementElevateAccess"
+| where ActivityDisplayName =~ "User has elevated their access to User Access Administrator for their Azure Resources"
+```
+
+Same source, same detection, and **neither of the two values this rule uses**. Microsoft queries
+`AuditLogs` with the category and activity name that appear in its own published reference, which is
+what this candidate says the rule should have used. That is a different and stronger kind of evidence
+than absence from a list: it is the vendor doing the same job with different values.
+
+It still does not promote to a finding without an executed test, because the possibility remains that
+both spellings work through some mapping. But if this is ever written up, this is the paragraph that
+carries it.
+
 ### 2. `azure_pim_activation_approve_deny.yml`
 
 Selects `Request Approved/Denied`, a single string with a slash. Microsoft documents two separate
