@@ -129,3 +129,62 @@ Pete Bryan, 2021. Same partial effect, and not ours to fix in the same breath.
 - Circular citation: authorship of every Microsoft file cited was checked with `git log`. The five
   hunting queries that are ours are listed as ours and excluded from the evidence side.
 - Case: excluded as a cause by running `=~`, which also returns 0.
+
+## The fix, prepared 2026-09-13 and not sent
+
+Branch `fix-app-credential-added-fragment-match` on `descambiado/sigma`, commit `d2946fa`, based on
+upstream master `5c9b217`. **One file, +6 / -4.**
+
+```yaml
+    selection:
+        # Two fragments on purpose: the export writes U+2013 plus a trailing space here, some
+        # vendor content writes U+002D. https://github.com/SigmaHQ/sigma/pull/6247#issuecomment-5463002942
+        properties.message|contains|all:
+            - 'Update application'
+            - 'Certificates and secrets management'
+    condition: selection
+```
+
+**Why `contains|all` of two fragments and not simply the en dash back.** We measured Log Analytics
+and Graph, not an Event Hub payload, and `properties.message` is the Event Hub shape. Two fragments
+make that question moot. Keeping `Update application` as one of them also holds the rule inside its
+own title: the bare fragment alone would pull in `Create application – ...`, a new application rather
+than an existing one. Live: proposal 1 row, bare fragment 3, current rule 0.
+
+`|contains|all` on `properties.message` is already the convention in that folder, so this is not a
+novel construction.
+
+### Everything that was checked before calling it ready
+
+| Check | Result |
+|---|---|
+| `sigma check`, the file | 0 errors, 0 condition errors, 0 issues |
+| `sigma check`, all of `rules/cloud/azure/` | same, nothing else disturbed |
+| JSON schema `v2.1.0`, the exact tag the CI pins | valid |
+| yamllint rules from their own `.yamllint`, run by hand | clean, no pip in this venv |
+| trailing spaces, CRLF, final newline, 4 space indent | clean |
+| non-ASCII left in the file | **none**, which is the point |
+| merge against upstream master | no conflict |
+| merge against fukusuket's #5993 branch | **no conflict, verified by inspecting the merged file** |
+| our own `audit_operations.py` | SHORTHAND gone, fragment correctly reported as a fragment |
+| longest line added | 106 chars, shorter than two lines already in the file |
+
+### Deliberately left out
+
+- **Regression data.** The README says rules with `status: test` must point at an `info.yml` with a
+  real event, and JSON samples are supported. **Zero cloud rules in the repo have any**, so this
+  would be the first. We have the real event, but `golang_expr` is not installed here and there is no
+  `json_checker` binary, so it cannot be executed locally. Offered in the PR body rather than shipped.
+  Shipping a test we have not run is exactly the thing we said we would stop doing.
+- **`Add service principal credentials`.** A real operation, confirmed live, and **no rule in the
+  whole repository covers it**, checked across every `rules*` directory and #5993. That is its own
+  rule, not a widening of this PR.
+- **The `Create application` form.** Same reasoning. Real, 2 events, uncovered, out of scope here.
+
+### Provenance, stated correctly in the PR
+
+The hyphen is ours, commit `3153e89` of #6247, 2026-08-20. The slash joined value is **not** ours and
+not the reviewer's: Swachchhanda's commit only added quotes, and it is in the rule as authored in
+2022 by Morowczynski and Bercik. nasbench added the inline comment. The PR says so.
+
+**Not opened.** PR body drafted, 4,134 characters, em dash scan clean.
