@@ -83,7 +83,88 @@ def classify(value, ms_exact, ms_lower, ms_strip, ms_dash):
     d = v.translate(DASHES).strip().lower()
     if d in ms_dash:
         return "DASH", ms_dash[d]
+    parts = shorthand_parts(v, ms_lower)
+    if parts:
+        return "SHORTHAND", " + ".join(repr(x) for x in parts)
     return "ABSENT", None
+
+
+def shorthand_parts(value, ms_lower):
+    """Two or more real operation names joined into one string.
+
+    Found 2026-09-13 in SigmaHQ azure_app_credential_added.yml, which carried
+    'Update Service principal/Update Application' as an exact match value. No
+    single activity is named that, so it matches nothing, and it reads like
+    documentation shorthand for "either of these two" that got written into the
+    rule as a literal. Confirmed against live telemetry: the joined string
+    returns 0 rows, the two real operations return 6 and 3.
+
+    Only 4 of Microsoft's 907 activities contain a slash at all, and every one
+    is a genuine name (a URL path, or an '(extend/renew)' suffix), so a slash
+    between two known operation names is a strong signal rather than a guess.
+    """
+    for sep in ("/", " or ", ","):
+        if sep not in value:
+            continue
+        parts = [p.strip() for p in value.split(sep)]
+        if len(parts) < 2 or not all(parts):
+            continue
+        if all(p.lower() in ms_lower for p in parts):
+            return [ms_lower[p.lower()] for p in parts]
+        expanded = expand_shared_prefix(parts, ms_lower)
+        if expanded:
+            return expanded
+    return None
+
+
+def expand_shared_prefix(parts, ms_lower):
+    """Handle the abbreviated form where only the tail is alternated.
+
+    SigmaHQ azure_pim_activation_approve_deny.yml carried 'Request
+    Approved/Denied' on master, meaning 'Request approved' or 'Request denied'.
+    The first part is a whole name, the rest are bare tails that only make sense
+    with the first part's leading words in front of them.
+
+    fukusuket's PR #5993 splits that one into two values, which is the right
+    fix and is why this pattern is worth detecting rather than arguing about.
+    """
+    head = parts[0].split()
+    if parts[0].lower() not in ms_lower or len(head) < 2:
+        return None
+    out = [ms_lower[parts[0].lower()]]
+    for tail in parts[1:]:
+        n = len(tail.split())
+        if n >= len(head):
+            return None
+        candidate = " ".join(head[:-n] + tail.split())
+        if candidate.lower() not in ms_lower:
+            return None
+        out.append(ms_lower[candidate.lower()])
+    return out
+
+
+def reordered_candidates(value, ms_lower, limit=4):
+    """Real activities that use all of the value's words in a different order.
+
+    Found 2026-09-13 in SigmaHQ azure_user_password_change.yml, which selects
+    `operationName|contains: 'Password reset'` while every completed Entra
+    password operation is verb first: 'Reset password (self-service)',
+    'Change password (self-service)', 'Reset password (by admin)'. The phrase
+    never appears in any of them, so the rule cannot catch what its title says.
+
+    Microsoft's own detection avoids exactly this by matching tokens rather
+    than a phrase, see MultiplePasswordresetsbyUser.yaml.
+    """
+    toks = [t for t in re.split(r"[^a-z0-9]+", value.lower()) if t]
+    if len(toks) < 2:
+        return []
+    out = []
+    for low, orig in ms_lower.items():
+        if value.lower() in low:
+            continue                      # phrase is present, nothing reordered
+        if all(t in re.split(r"[^a-z0-9]+", low) for t in toks):
+            out.append(orig)
+    return sorted(out)[:limit]
 
 
 def main():
@@ -132,14 +213,14 @@ def main():
                         verdict, match = classify(v, ms_exact, ms_lower, ms_strip, ms_dash)
                         results.append((path.name, field, v, verdict, match, partial))
 
-    order = {"ABSENT": 0, "DASH": 1, "WHITESPACE": 2, "CASE": 3, "EXACT": 4}
+    order = {"SHORTHAND": 0, "ABSENT": 1, "DASH": 2, "WHITESPACE": 3, "CASE": 4, "EXACT": 5}
     results.sort(key=lambda r: (order[r[3]], r[0]))
 
     counts = Counter(r[3] for r in results)
     print(f"operation-name values checked : {len(results)}  (auditlogs rules only)")
     if skipped:
         print(f"  rules skipped, different log source and naming scheme: {dict(skipped)}")
-    for k in ("EXACT", "CASE", "WHITESPACE", "DASH", "ABSENT"):
+    for k in ("EXACT", "CASE", "WHITESPACE", "DASH", "SHORTHAND", "ABSENT"):
         if counts.get(k):
             print(f"  {k:<11}: {counts[k]}")
     print()
@@ -151,6 +232,12 @@ def main():
         print(f"    rule has  : {value!r}{tag}")
         if match:
             print(f"    Microsoft : {match!r}")
+        if verdict == "ABSENT":
+            alts = reordered_candidates(value, ms_lower)
+            if alts:
+                print(f"    same words, different order, so the phrase may be reversed:")
+                for a in alts:
+                    print(f"                {a!r}")
     return 0
 
 

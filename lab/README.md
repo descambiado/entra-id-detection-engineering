@@ -212,7 +212,7 @@ larger question: **of the detection rules published for Azure, how many cannot f
 You do not need a tenant for most of it. You need one only to promote an answer from "probably" to
 "I ran it".
 
-## The four ways this method lies to you
+## The six ways this method lies to you
 
 Read this section before the tool list. Every item below produced a wrong answer here first, and
 each one would have been published if it had not been checked.
@@ -252,6 +252,43 @@ file name. **Before writing up any finding, grep the open PRs of that repository
 independent confirmation of someone else's known bug is a useful comment on their PR. It is not your
 finding. Generate the event, show the rule's value returns nothing where the real value returns the
 row, and keep both queries.
+
+**And a sixth, added 2026-09-13, which is the expensive one, because it is about our own merged
+work.** SigmaHQ #6247 is ours and it is merged. It changed
+`Update application – Certificates and secrets management` to the same string with U+002D, on two
+stated grounds. Both were checked today and neither holds.
+
+The first was *"Microsoft's own Entra ID solution uses U+002D"*. Microsoft's two analytic rules
+match like this:
+
+```kql
+| where OperationName has_any ("Add service principal", "Certificates and secrets management")
+  // captures ... "Update application - Certificates and secrets management" events
+```
+
+The hyphen is in the `//` comment. **The predicate deliberately matches a fragment with no dash in
+it.** The citation read the comment as if it were the query.
+
+The second was *"Elastic's rule agrees"*. Five days later we filed elastic/detection-rules #6749
+arguing that exact Elastic value is a defect because the hyphen cannot match. **We cited as
+corroboration the very string we then went on to call a bug.**
+
+Against live data both values in that merged rule now return 0, while Microsoft's fragment returns 7.
+
+Three habits fall out of it, and they are the ones worth keeping:
+
+- **Cite the predicate, never the comment.** A `//` line next to a query is documentation, and
+  documentation is the least reliable representation of all. The measured field is the claim.
+- **Grep your own record before citing anyone.** The contradiction was two of our own PRs, five days
+  apart, both public, both still open or merged. Anyone reading both would find it before we did.
+- **Prefer the value with no disputed character in it.** Where a fragment exists that sidesteps the
+  question entirely, take it. Microsoft did, and their query still works. Ours stopped working.
+
+Mechanised where possible: `audit_operations.py` now has a `SHORTHAND` verdict for values that are
+two real operation names joined into one, which caught `Update Service principal/Update Application`
+in that same rule and `Request Approved/Denied` in another, and an ABSENT hint that offers real
+activities using the same words in a different order, which caught `Password reset` against
+`Reset password (self-service)`.
 
 ## Tools
 

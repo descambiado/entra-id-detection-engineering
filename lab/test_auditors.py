@@ -163,6 +163,98 @@ class SigninLogsAuditor(unittest.TestCase):
         self.assertNotIn("Username", sig.COLS)
 
 
+class Trap6_MultipleOperationsInOneValue(unittest.TestCase):
+    """Two real operation names joined into one string match nothing.
+
+    SigmaHQ azure_app_credential_added.yml carried
+    'Update Service principal/Update Application' as an exact match value from
+    2022 until at least 2026-09-13. Live telemetry: the joined string 0 rows,
+    'Update service principal' 6 rows, 'Update application' 3 rows.
+
+    Our own merged PR #6247 touched the line directly above it and did not
+    notice, which is why this is a test and not a note.
+    """
+
+    def setUp(self):
+        self.ms_lower = {m.lower(): m for m in ops.MS}
+
+    def test_slash_joined_pair_is_detected(self):
+        parts = ops.shorthand_parts("Update Service principal/Update Application", self.ms_lower)
+        self.assertEqual(parts, ["Update service principal", "Update application"])
+
+    def test_it_gets_its_own_verdict_not_absent(self):
+        verdict, _ = ops.classify(
+            "Update Service principal/Update Application",
+            set(ops.MS), self.ms_lower, {m.strip(): m for m in ops.MS}, {},
+        )
+        self.assertEqual(verdict, "SHORTHAND")
+
+    def test_a_real_name_containing_a_slash_is_not_flagged(self):
+        # 'Update member in PIM approved by admin (extend/renew)' is genuine.
+        real = "Update member in PIM approved by admin (extend/renew)"
+        self.assertIn(real, ops.MS)
+        self.assertIsNone(ops.shorthand_parts(real, self.ms_lower))
+
+    def test_an_ordinary_absent_string_is_not_flagged(self):
+        self.assertIsNone(ops.shorthand_parts("Some/Invented Thing", self.ms_lower))
+
+    def test_shared_prefix_form_is_detected(self):
+        """'Request Approved/Denied' means two operations that share a first word.
+        On SigmaHQ master until at least 2026-09-13. fukusuket's #5993 splits it
+        into two values, which is the fix this verdict is meant to prompt."""
+        parts = ops.shorthand_parts("Request Approved/Denied", self.ms_lower)
+        self.assertEqual(parts, ["Request approved", "Request denied"])
+
+    def test_shared_prefix_needs_every_tail_to_resolve(self):
+        self.assertIsNone(ops.shorthand_parts("Request Approved/Nonsense", self.ms_lower))
+
+    def test_shared_prefix_does_not_fire_on_an_unknown_head(self):
+        self.assertIsNone(ops.shorthand_parts("Invented Thing/Denied", self.ms_lower))
+
+
+class Trap7_PhraseWordOrder(unittest.TestCase):
+    """A phrase can be absent while all of its words are present, reversed.
+
+    SigmaHQ azure_user_password_change.yml selects
+    `operationName|contains: 'Password reset'`, but Entra names every completed
+    password operation verb first. Microsoft's own MultiplePasswordresetsbyUser
+    matches tokens in any order rather than the phrase, for this exact reason.
+    """
+
+    def setUp(self):
+        self.ms_lower = {m.lower(): m for m in ops.MS}
+
+    def test_the_reversed_forms_are_offered(self):
+        alts = ops.reordered_candidates("Password reset", self.ms_lower)
+        self.assertIn("Reset password (self-service)", alts)
+        self.assertIn("Reset password (by admin)", alts)
+
+    def test_the_phrase_never_appears_with_the_rules_capitalisation(self):
+        self.assertFalse(any("Password reset" in m for m in ops.MS))
+
+    def test_the_two_operations_the_rule_means_do_not_contain_it(self):
+        for real in ("Reset password (self-service)", "Change password (self-service)"):
+            self.assertIn(real, ops.MS)
+            self.assertNotIn("password reset", real.lower())
+
+    def test_the_suggested_replacement_is_exact(self):
+        hits = [m for m in ops.MS if "password (self-service)" in m.lower()]
+        self.assertEqual(sorted(hits), ["Change password (self-service)",
+                                        "Reset password (self-service)"])
+
+    def test_activities_the_phrase_already_matches_are_not_suggested(self):
+        """The hint is for what you missed, so anything the value already hits
+        is filtered out. 'Reset password' does hit 'Reset password (by admin)',
+        so that must not come back as a suggestion, while genuinely reordered
+        forms like 'Admin started password reset' must."""
+        alts = ops.reordered_candidates("Reset password", self.ms_lower)
+        self.assertNotIn("Reset password (by admin)", alts)
+        self.assertNotIn("Reset password (self-service)", alts)
+        self.assertIn("Admin started password reset", alts)
+        for a in alts:
+            self.assertNotIn("reset password", a.lower())
+
+
 class ReferenceData(unittest.TestCase):
     """The catalogues are the tools' ground truth. If one silently empties or
     shrinks, every verdict flips to ABSENT and the report looks like a jackpot."""

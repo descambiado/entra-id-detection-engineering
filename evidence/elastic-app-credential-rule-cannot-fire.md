@@ -71,9 +71,16 @@ covers that operation at all.** That is a coverage gap, independent of this stri
 
 ## What is NOT claimed
 
-- Nothing here applies to SigmaHQ's `azure_app_credential_added.yml`. That rule selects on
+- ~~Nothing here applies to SigmaHQ's `azure_app_credential_added.yml`. That rule selects on
   `properties.message`, a different field in a convention this repo deliberately excludes from its
-  audit, and a maintainer merged it knowingly.
+  audit, and a maintainer merged it knowingly.~~
+
+  **Withdrawn 2026-09-13.** This carve out was weaker than it read. Elastic's
+  `azure.auditlogs.operation_name` is fed from Event Hub, so link 1 above and the Sigma rule are
+  closer than "a different field" suggests. Worse, SigmaHQ #6247 is ours, it moved that rule from
+  the en dash **to** the hyphen, and it cited this rule's hyphen as corroboration five days before
+  we filed #6749 saying that same hyphen is a defect. Both values in the merged Sigma rule now
+  return 0 against live data. Full working in `sigma-6247-reversed-a-correct-dash.md`.
 - The workspace measurement proves what the export emits. It does not, on its own, prove what Elastic
   stores. Links 2 and 3 are what carry the claim across that gap, and both were read from Elastic's
   own package rather than inferred.
