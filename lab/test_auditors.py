@@ -20,6 +20,7 @@ import audit_rules as rules
 import audit_activitylogs as act
 import infer_tables as inf
 import audit_signinlogs as sig
+import sanitize as san
 
 HERE = pathlib.Path(__file__).parent
 
@@ -253,6 +254,88 @@ class Trap7_PhraseWordOrder(unittest.TestCase):
         self.assertIn("Admin started password reset", alts)
         for a in alts:
             self.assertNotIn("reset password", a.lower())
+
+
+class Trap8_SanitizerReportedCleanWhileLeaking(unittest.TestCase):
+    """The redaction said "no leaks" while still publishing an internal id.
+
+    2026-09-13. A captured event was prepared for a public comment. GUIDs were
+    substituted before the longer string containing one of them, so
+    Directory_<guid>_SHARD7_1234567 kept its shard and sequence, and the check
+    passed because it only searched for the full original strings. Two separate
+    mistakes, one in the substitution order and one in the verification.
+    """
+
+    def test_longest_key_is_replaced_first(self):
+        m = {"abc": "SHORT", "abcdef": "LONG"}
+        self.assertEqual(san.apply_map("abcdef", m), "LONG")
+
+    def test_record_id_keeps_no_shard_or_sequence(self):
+        rec = {"Id": "Directory_" + "0" * 8 + "-1111-2222-3333-444444444444" + "_SHARD7_1234567"}
+        out = san.sanitize(rec)
+        self.assertNotIn("SHARD7", out)
+        self.assertNotIn("8791423", out)
+        self.assertEqual(san.leaks(out), [])
+
+    def test_verification_catches_an_identifier_nobody_listed(self):
+        """The point of checking a shape rather than a list of known values."""
+        self.assertTrue(san.leaks('{"x": "7f3a91bc-2d44-4e11-9a8c-5b6d0e2f7a13"}'))
+        self.assertTrue(san.leaks('{"ip": "198.51.100.7"}'))
+        self.assertTrue(san.leaks('{"upn": "someone_gmail.com#EXT#@tenant.onmicrosoft.com"}'))
+
+    def test_placeholders_are_not_reported_as_leaks(self):
+        clean = '{"g": "11111111-1111-1111-1111-111111111111", "ip": "203.0.113.10"}'
+        self.assertEqual(san.leaks(clean), [])
+
+    def test_the_evidence_itself_survives(self):
+        """The dash findings rest on U+2013 and a trailing space. If redaction
+        normalised either of them the sample would prove the opposite."""
+        op = "Update application – Certificates and secrets management "
+        out = san.sanitize({"OperationName": op})
+        self.assertIn("–", out)
+        self.assertIn('management "', out)
+
+    def test_names_are_redacted_inside_embedded_json(self):
+        """Log Analytics returns TargetResources as a string holding JSON."""
+        rec = {"TargetResources": '[{"displayName": "app-registration-7", "type": "ServicePrincipal"}]'}
+        out = san.sanitize(rec)
+        self.assertNotIn("DELETE-ME", out)
+        self.assertIn("ServicePrincipal", out)
+
+    def test_same_input_gives_same_output(self):
+        rec = {"a": "7f3a91bc-2d44-4e11-9a8c-5b6d0e2f7a13", "b": "10.1.2.3"}
+        self.assertEqual(san.sanitize(rec), san.sanitize(rec))
+
+    def test_user_agent_is_redacted(self):
+        """It carries the operating system build, which fingerprints the machine.
+        Missed by the first two passes of this module and found by an
+        independent sweep that looked for known real values instead of shapes."""
+        rec = {"AdditionalDetails": '[{"key": "User-Agent", "value": "python/9.9.9 (Windows-99-0.0.00000-SP0) AZURECLI/9.9.9"}]'}
+        out = san.sanitize(rec)
+        self.assertNotIn("Windows-99", out)
+        self.assertNotIn("AZURECLI", out)
+        self.assertIn("User-Agent", out)
+
+    def test_name_inside_a_credential_blob_is_redacted(self):
+        """KeyDescription splices the credential name into a flat string, so no
+        walk over JSON keys ever reaches it."""
+        rec = {"TargetResources": '[{"modifiedProperties": [{"displayName": "KeyDescription", "newValue": "[\"[KeyIdentifier=7f3a91bc-2d44-4e11-9a8c-5b6d0e2f7a13,KeyType=Password,KeyUsage=Verify,DisplayName=my-app-secret]\"]"}]}]'}
+        out = san.sanitize(rec)
+        self.assertNotIn("my-app-secret", out)
+        self.assertIn("KeyType=Password", out)   # la evidencia se queda
+
+    def test_module_carries_no_real_identifier(self):
+        """It lives in a public repo, so it must not embed anything of his.
+
+        This test failed on its first run and was right to: the docstring still
+        quoted the real shard and sequence from the record that caused the leak.
+        Only the module's own vocabulary is tolerated here, the two constants it
+        has to name in order to match them. Identifiers are not tolerated at all.
+        """
+        src = pathlib.Path(san.__file__).read_text(encoding="utf-8")
+        vocabulary = {"guest-upn-marker", "record-id-shard"}
+        real = [x for x in san.leaks(src) if x[0] not in vocabulary]
+        self.assertEqual(real, [], "an identifier is embedded in a public file")
 
 
 class ReferenceData(unittest.TestCase):

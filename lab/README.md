@@ -212,7 +212,7 @@ larger question: **of the detection rules published for Azure, how many cannot f
 You do not need a tenant for most of it. You need one only to promote an answer from "probably" to
 "I ran it".
 
-## The six ways this method lies to you
+## The seven ways this method lies to you
 
 Read this section before the tool list. Every item below produced a wrong answer here first, and
 each one would have been published if it had not been checked.
@@ -289,6 +289,45 @@ two real operation names joined into one, which caught `Update Service principal
 in that same rule and `Request Approved/Denied` in another, and an ABSENT hint that offers real
 activities using the same words in a different order, which caught `Password reset` against
 `Reset password (self-service)`.
+
+**And a seventh, added 2026-09-14, which is about verification checking itself.** A captured event
+was being prepared for publication. It went through three passes:
+
+1. A hand written substitution said **no leaks**. It had replaced a GUID before replacing the longer
+   string that contained it, so a record id kept its internal shard and sequence. The check only
+   searched for the full original strings, and the full string no longer existed.
+2. A proper module was written with a `leaks()` function that checks **shapes** rather than a list,
+   which is strictly better. It reported clean. Its own test then found a real shard quoted in its
+   own docstring, in a file destined for a public repo.
+3. An **independent sweep**, which simply searched the files for the real values known from the
+   session, found two more: the exact Windows build inside a `User-Agent`, and a credential name
+   spliced into a flat `KeyIdentifier=...,DisplayName=...` blob where no walk over JSON keys reaches.
+
+Three passes, three different misses, each found only by a check built differently from the one
+before. The rule that falls out of it:
+
+**A tool cannot verify itself past its own blind spot.** Shape based checking finds what no list
+anticipated, and value based checking finds what no shape anticipated. Publishing needs both, run
+separately, and the second must not be written by looking at the first.
+
+The practical form of it here: `sanitize.py` redacts and self checks, and a separate sweep greps the
+staged files for the real identifiers taken from the live environment. Nothing is published on the
+strength of the redactor's own opinion of itself.
+
+## Freezing the evidence before the lab expires
+
+`freeze_evidence.py` re-runs every claim in `evidence/` against the live workspace and records the
+result. It exists because the lab is temporary: the Azure credit ends 2026-09-19 and retention is 30
+days from 2026-09-07, so every sentence that reads "returns N rows" stops being checkable soon after.
+
+Each claim is declared with the query that produced it and the count it should give, so running it
+proves the claims still hold, and running it after the lab dies fails honestly instead of pretending.
+The supporting events are frozen alongside, sanitized, because a count with no record under it is
+just a number. **11 of 11 claims held on 2026-09-14.**
+
+One claim is deliberately **not** in that table. `contains 'Password reset'` returns zero, but the
+tenant holds no password events at all, so that zero measures nothing. Putting it in a file called
+frozen evidence would dress up an absence as an executed test.
 
 ## Tools
 

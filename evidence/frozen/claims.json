@@ -1,0 +1,118 @@
+{
+  "frozen_at": "2026-09-14T02:26:47Z",
+  "workspace_retention_days": 30,
+  "claims": [
+    {
+      "id": "6247-hyphen-exact",
+      "says": "the value SigmaHQ #6247 merged matches nothing",
+      "kql": "AuditLogs | where OperationName == 'Update application - Certificates and secrets management' | count",
+      "expect": 0,
+      "cited": "sigma-6247-reversed-a-correct-dash.md",
+      "got": 0,
+      "error": null,
+      "ok": true
+    },
+    {
+      "id": "6247-hyphen-caseless",
+      "says": "and case is not the cause, =~ gives the same",
+      "kql": "AuditLogs | where OperationName =~ 'Update application - Certificates and secrets management' | count",
+      "expect": 0,
+      "cited": "sigma-6247-reversed-a-correct-dash.md",
+      "got": 0,
+      "error": null,
+      "ok": true
+    },
+    {
+      "id": "6247-endash-real",
+      "says": "the export emits the en dash and a trailing space",
+      "kql": "AuditLogs | where OperationName == 'Update application – Certificates and secrets management ' | count",
+      "expect": 1,
+      "cited": "sigma-6247-reversed-a-correct-dash.md",
+      "got": 1,
+      "error": null,
+      "ok": true
+    },
+    {
+      "id": "6247-slash-value",
+      "says": "the other value in that rule is not an operation name",
+      "kql": "AuditLogs | where OperationName == 'Update Service principal/Update Application' | count",
+      "expect": 0,
+      "cited": "sigma-6247-reversed-a-correct-dash.md",
+      "got": 0,
+      "error": null,
+      "ok": true
+    },
+    {
+      "id": "microsoft-fragment",
+      "says": "Microsoft's dash free fragment predicate works",
+      "kql": "AuditLogs | where OperationName has_any ('Add service principal','Certificates and secrets management') | count",
+      "expect": 7,
+      "cited": "sigma-6247-reversed-a-correct-dash.md",
+      "got": 7,
+      "error": null,
+      "ok": true
+    },
+    {
+      "id": "6294-proposal",
+      "says": "the fix proposed in SigmaHQ #6294 catches the update and only the update",
+      "kql": "AuditLogs | where OperationName contains 'Update application' and OperationName contains 'Certificates and secrets management' | count",
+      "expect": 1,
+      "cited": "sigma-6247-reversed-a-correct-dash.md",
+      "got": 1,
+      "error": null,
+      "ok": true
+    },
+    {
+      "id": "6294-excludes-create",
+      "says": "and deliberately does not reach the create form, which is a different rule's job",
+      "kql": "AuditLogs | where OperationName == 'Create application – Certificates and secrets management ' and OperationName contains 'Update application' | count",
+      "expect": 0,
+      "cited": "sigma-6247-reversed-a-correct-dash.md",
+      "got": 0,
+      "error": null,
+      "ok": true
+    },
+    {
+      "id": "create-form-is-real",
+      "says": "the create form is real and uncovered by any rule in SigmaHQ or Elastic",
+      "kql": "AuditLogs | where OperationName == 'Create application – Certificates and secrets management ' | count",
+      "expect": 2,
+      "cited": "elastic-app-credential-rule-cannot-fire.md",
+      "got": 2,
+      "error": null,
+      "ok": true
+    },
+    {
+      "id": "6142-startswith",
+      "says": "the predicate in SigmaHQ #6142 matches a real credential addition",
+      "kql": "AuditLogs | where OperationName startswith 'Add service principal credentials' | count",
+      "expect": 1,
+      "cited": "comentario-sigma-6142-logs.md",
+      "got": 1,
+      "error": null,
+      "ok": true
+    },
+    {
+      "id": "5993-add-member-from",
+      "says": "the value the rule had before fukusuket's fix matches nothing",
+      "kql": "AuditLogs | where OperationName =~ 'Add member from group' | count",
+      "expect": 0,
+      "cited": "sigma-add-member-from-group.md",
+      "got": 0,
+      "error": null,
+      "ok": true
+    },
+    {
+      "id": "5993-add-member-to",
+      "says": "while the real operation does",
+      "kql": "AuditLogs | where OperationName =~ 'Add member to group' | count",
+      "expect": 1,
+      "cited": "sigma-add-member-from-group.md",
+      "got": 1,
+      "error": null,
+      "ok": true
+    }
+  ],
+  "passing": 11,
+  "total": 11
+}

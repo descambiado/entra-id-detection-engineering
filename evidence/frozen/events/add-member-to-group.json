@@ -1,0 +1,17 @@
+{
+  "AADOperationType": "Assign",
+  "ActivityDateTime": "2026-09-08T12:59:13.1101673Z",
+  "ActivityDisplayName": "Add member to group",
+  "AdditionalDetails": "[{\"key\": \"User-Agent\", \"value\": \"REDACTED\"}]",
+  "Category": "GroupManagement",
+  "CorrelationId": "11111111-1111-1111-1111-111111111111",
+  "Id": "Directory_REDACTED",
+  "InitiatedBy": "{\"user\": {\"displayName\": null, \"agentType\": \"notAgentic\", \"id\": \"22222222-2222-2222-2222-222222222222\", \"userPrincipalName\": \"REDACTED\", \"ipAddress\": \"203.0.113.10\", \"roles\": []}}",
+  "LoggedByService": "Core Directory",
+  "OperationName": "Add member to group",
+  "OperationVersion": "1.0",
+  "Resource": "Microsoft.aadiam",
+  "Result": "success",
+  "ResultSignature": "None",
+  "TargetResources": "[{\"id\": \"33333333-3333-3333-3333-333333333333\", \"displayName\": null, \"type\": \"User\", \"modifiedProperties\": [{\"displayName\": \"REDACTED\", \"oldValue\": null, \"newValue\": \"\\\"44444444-4444-4444-4444-444444444444\\\"\"}, {\"displayName\": \"REDACTED\", \"oldValue\": null, \"newValue\": \"\\\"lab-group-DELETE-ME\\\"\"}], \"administrativeUnits\": [], \"agentType\": \"notAgentic\", \"userPrincipalName\": \"REDACTED\"}, {\"id\": \"44444444-4444-4444-4444-444444444444\", \"displayName\": null, \"type\": \"Group\", \"modifiedProperties\": [], \"administrativeUnits\": [], \"agentType\": \"notAgentic\", \"groupType\": \"unknownFutureValue\"}]"
+}
