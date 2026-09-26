@@ -149,12 +149,16 @@ Every detection in this repo follows the same process:
 |----|-------------|--------|
 | [#4091](https://github.com/splunk/security_content/pull/4091) | Azure AD Entra ID identity attack detections: TAP creation, guest-to-member, federated identity credential (3 analytics) | In review |
 
-### SigmaHQ/sigma
+### SigmaHQ/sigma (1 merged, 5 open)
 
 | PR | Description | Status |
 |----|-------------|--------|
-| [#6243](https://github.com/SigmaHQ/sigma/pull/6243) | Administrator Changed Authentication Method Of Another User | In review |
-| [#6247](https://github.com/SigmaHQ/sigma/pull/6247) | Fix: Added Credentials to Existing Application (en-dash character bug on a production 2022 rule, found via this repo's own tenant validation) | Approved, pending merge |
+| [#6243](https://github.com/SigmaHQ/sigma/pull/6243) | Administrator Changed Authentication Method Of Another User | Open (Aug 20, 2026) |
+| [#6247](https://github.com/SigmaHQ/sigma/pull/6247) | Fix: Added Credentials to Existing Application (en-dash character bug on a production 2022 rule, found via this repo's own tenant validation) | Merged Sep 3, 2026 |
+| [#6276](https://github.com/SigmaHQ/sigma/pull/6276) | Add detection for owner added to service principal | Open (Sep 2, 2026) |
+| [#6283](https://github.com/SigmaHQ/sigma/pull/6283) | Fix `Initiatied.By`/`Sucess` field-name typos in an existing rule | Open (Sep 8, 2026) |
+| [#6294](https://github.com/SigmaHQ/sigma/pull/6294) | Fix: app credential rule matched no real event, use fragment match | Open (Sep 13, 2026) |
+| [#6330](https://github.com/SigmaHQ/sigma/pull/6330) | Fix: Azure Subscription Permission Elevation rule used Activity Log fields on an Entra ID logsource | Open (Sep 26, 2026) |
 
 ### Sigma rules (vendor-neutral, authored here)
 
