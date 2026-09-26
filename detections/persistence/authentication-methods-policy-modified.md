@@ -30,6 +30,9 @@ tags:
     - attack.defense-evasion
     - attack.persistence
     - attack.t1556.006
+logsource:
+    product: azure
+    service: auditlogs
 detection:
     selection:
         Category: Policy

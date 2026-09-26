@@ -65,6 +65,9 @@ tags:
     - attack.persistence
     - attack.defense-evasion
     - attack.t1556.006
+logsource:
+    product: azure
+    service: auditlogs
 detection:
     selection:
         OperationName:

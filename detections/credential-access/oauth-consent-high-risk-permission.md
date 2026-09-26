@@ -92,6 +92,9 @@ tags:
     - attack.credential-access
     - attack.initial-access
     - attack.t1528
+logsource:
+    product: azure
+    service: auditlogs
 detection:
     selection_operation:
         OperationName: 'Consent to application'

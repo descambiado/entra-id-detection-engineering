@@ -85,6 +85,9 @@ tags:
     - attack.privilege-escalation
     - attack.persistence
     - attack.t1098.003
+logsource:
+    product: azure
+    service: auditlogs
 detection:
     selection:
         Category: GroupManagement

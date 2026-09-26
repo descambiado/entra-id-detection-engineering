@@ -27,6 +27,9 @@ status: test
 tags:
     - attack.persistence
     - attack.t1098
+logsource:
+    product: azure
+    service: auditlogs
 detection:
     selection:
         OperationName:

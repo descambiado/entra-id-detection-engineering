@@ -54,6 +54,9 @@ status: test
 tags:
     - attack.defense-evasion
     - attack.t1562.001
+logsource:
+    product: azure
+    service: auditlogs
 detection:
     selection:
         Category: Policy
