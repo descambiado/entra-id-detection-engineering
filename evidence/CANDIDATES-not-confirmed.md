@@ -18,7 +18,29 @@ queries both strings verbatim.** The rule is almost certainly fine and the refer
 
 ## Open candidates, ranked by how much non-list evidence exists
 
-### 1. `azure_subscription_permissions_elevation_via_auditlogs.yml` (strongest)
+### 1. `azure_subscription_permissions_elevation_via_auditlogs.yml`: PROMOTED TO FINDING 2026-09-26, see below
+
+**Confirmed with a real executed test on 2026-09-26.** Elevated the lab tenant's own Global Admin
+account to User Access Administrator at root scope (`az rest --method post --url
+".../providers/Microsoft.Authorization/elevateAccess?api-version=2016-07-01"`), captured the real
+event via Graph, then immediately reverted the role assignment. The real event:
+
+```
+category: "AzureRBACRoleManagementElevateAccess"
+activityDisplayName: "User has elevated their access to User Access Administrator for their Azure Resources"
+loggedByService: "Azure RBAC (Elevated Access)"
+result: "success"
+```
+
+Confirmed against the real `AuditLogs` table schema (`lab/azure_schema.json`): the table has separate
+`OperationName` and `ActivityDisplayName` columns. Neither the rule's `Category: 'Administrative'` nor
+`OperationName: 'Assigns the caller to user access admin'` appears anywhere in the real event.
+Microsoft's own `AzureRBAC.yaml` rule was right all along. Fixed in the local `sigma` clone to
+`Category: 'AzureRBACRoleManagementElevateAccess'` / `ActivityDisplayName: 'User has elevated their
+access to User Access Administrator for their Azure Resources'`, `sigma check` clean. Not yet opened
+as a PR, pending David's review.
+
+**Original reasoning below, kept for the record:**
 
 ```yaml
 Category: 'Administrative'

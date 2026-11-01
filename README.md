@@ -2,7 +2,7 @@
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/descambiado/entra-id-detection-engineering?style=flat&color=blue)
 ![GitHub last commit](https://img.shields.io/github/last-commit/descambiado/entra-id-detection-engineering?style=flat)
-![Azure-Sentinel PRs merged](https://img.shields.io/badge/Azure--Sentinel%20PRs%20merged-19-brightgreen?style=flat)
+![Azure-Sentinel PRs merged](https://img.shields.io/badge/Azure--Sentinel%20PRs%20merged-21-brightgreen?style=flat)
 ![Elastic rules merged](https://img.shields.io/badge/Elastic%20rules%20merged-3-brightgreen?style=flat)
 ![Detections](https://img.shields.io/badge/detections-33-orange?style=flat)
 ![MITRE techniques](https://img.shields.io/badge/MITRE%20techniques-12-red?style=flat)
@@ -104,14 +104,14 @@ Every detection in this repo follows the same process:
 1. **Start from the attacker objective** - what does the attacker need to accomplish, and what is the minimum footprint to do it?
 2. **Find the seam** - Entra ID always logs the action. The question is whether standard detections are looking at the right field, the right correlation window, or the right baseline.
 3. **Build a baseline** - anomaly beats signature. A sign-in from a new country is noise. A sign-in from a new country *followed by a privileged operation within one hour* is signal.
-4. **Validate the gap** - before writing, search the target repo for existing coverage. Every detection here was verified to fill a genuine gap.
+4. **Validate the gap** - before writing, search the target repo for existing coverage, open pull requests included. One draft rule here was withdrawn after that check found an open PR already covering it, and the evidence folder records the corrections to our own merged work.
 5. **Reduce noise deliberately** - a detection that fires on everything is useless. Every query here has a specific threshold, correlation window, or filter that makes it actionable.
 
 ---
 
 ## Contributions
 
-### Azure/Azure-Sentinel (19 PRs merged)
+### Azure/Azure-Sentinel (21 PRs merged)
 
 | PR | Description | Status |
 |----|-------------|--------|
@@ -134,35 +134,55 @@ Every detection in this repo follows the same process:
 | [#14600](https://github.com/Azure/Azure-Sentinel/pull/14600) | BadUSB LOLBIN execution via certutil (Run dialog) | Merged July 3, 2026 |
 | [#14789](https://github.com/Azure/Azure-Sentinel/pull/14789) | Entra ID group role assignment hunting pack: role-assignable group creation, member/owner added, CA policy exclusion (3 queries) | Merged July 31, 2026 |
 | [#14948](https://github.com/Azure/Azure-Sentinel/pull/14948) | Break-glass account hunting pack: sign-in, credential/MFA change, role or group membership change (3 queries) | Merged August 24, 2026 |
+| [#15434](https://github.com/Azure/Azure-Sentinel/pull/15434) | Fix stale hyphen in the app-registration credential operation value (7 files) | Merged October 28, 2026 |
+| [#15444](https://github.com/Azure/Azure-Sentinel/pull/15444) | Fix federated identity credential hunting query: app registrations log `Update application` (corrects the partial coverage of #14311, see `evidence/`) | Merged October 28, 2026 |
 
-### elastic/detection-rules (3 rules merged, 2 in review)
+### elastic/detection-rules (3 rules and 1 fix merged, 2 in review)
 
 | PR | Description | Status |
 |----|-------------|--------|
 | [#6168](https://github.com/elastic/detection-rules/pull/6168) | Entra ID identity attack rules: TAP creation, guest-to-member, OAuth redirect URI (3 rules) | Merged June 18, 2026 |
+| [#6749](https://github.com/elastic/detection-rules/pull/6749) | Rule tuning: fix operation name in Entra ID Application Credential Modified | Merged September 29, 2026 |
 | [#6680](https://github.com/elastic/detection-rules/pull/6680) | Entra ID admin-registered MFA method for another user | In review (opened Aug 20, 2026) |
 | [#6691](https://github.com/elastic/detection-rules/pull/6691) | Entra ID named location deleted or modified | In review (opened Aug 24, 2026) |
 
 ### splunk/security_content
 
+Test data for these analytics was merged separately in [splunk/attack_data#1187](https://github.com/splunk/attack_data/pull/1187) (July 6, 2026).
+
 | PR | Description | Status |
 |----|-------------|--------|
 | [#4091](https://github.com/splunk/security_content/pull/4091) | Azure AD Entra ID identity attack detections: TAP creation, guest-to-member, federated identity credential (3 analytics) | In review |
 
-### SigmaHQ/sigma (1 merged, 5 open)
+### SigmaHQ/sigma (2 merged, 5 open, 1 closed)
 
 | PR | Description | Status |
 |----|-------------|--------|
 | [#6243](https://github.com/SigmaHQ/sigma/pull/6243) | Administrator Changed Authentication Method Of Another User | Open (Aug 20, 2026) |
-| [#6247](https://github.com/SigmaHQ/sigma/pull/6247) | Fix: Added Credentials to Existing Application (en-dash character bug on a production 2022 rule, found via this repo's own tenant validation) | Merged Sep 3, 2026 |
+| [#6247](https://github.com/SigmaHQ/sigma/pull/6247) | Fix: Added Credentials to Existing Application (en-dash character bug on a production 2022 rule, found via this repo's own tenant validation). Later measured to be wrong, see `evidence/sigma-6247-reversed-a-correct-dash.md`; #6294 corrects it | Merged Sep 3, 2026 |
 | [#6276](https://github.com/SigmaHQ/sigma/pull/6276) | Add detection for owner added to service principal | Open (Sep 2, 2026) |
-| [#6283](https://github.com/SigmaHQ/sigma/pull/6283) | Fix `Initiatied.By`/`Sucess` field-name typos in an existing rule | Open (Sep 8, 2026) |
+| [#6283](https://github.com/SigmaHQ/sigma/pull/6283) | Fix `Initiatied.By`/`Sucess` field-name typos in an existing rule | Closed Oct 22, 2026, superseded by #5993 |
 | [#6294](https://github.com/SigmaHQ/sigma/pull/6294) | Fix: app credential rule matched no real event, use fragment match | Open (Sep 13, 2026) |
-| [#6330](https://github.com/SigmaHQ/sigma/pull/6330) | Fix: Azure Subscription Permission Elevation rule used Activity Log fields on an Entra ID logsource | Open (Sep 26, 2026) |
+| [#6330](https://github.com/SigmaHQ/sigma/pull/6330) | Fix: Azure Subscription Permission Elevation rule used Activity Log fields on an Entra ID logsource | Merged Oct 2, 2026 |
+| [#6532](https://github.com/SigmaHQ/sigma/pull/6532) | Add detection for tenant authorization policy modified | Open (Oct 27, 2026) |
+| [#6533](https://github.com/SigmaHQ/sigma/pull/6533) | Add detection rules for Entra ID cross-tenant access partner added/modified | Open (Oct 27, 2026) |
 
 ### Sigma rules (vendor-neutral, authored here)
 
-Several detections in this repo also include a vendor-neutral Sigma version, authored here and never submitted upstream; the canonical copies live in this repository under the relevant `detections/` folders. Separately, two real contributions to SigmaHQ/sigma are tracked in the table above: #6243 is a native rule submission covering the same admin-initiated MFA/security-info-change technique as this repo's `admin-mfa-registration-for-user.md`, written directly against SigmaHQ's own schema rather than copied from here; #6247 is a two-line fix to an existing 2022 rule authored by Microsoft's identity team, found through this repo's own tenant validation work, not a rule authored in this repository.
+Several detections in this repo also include a vendor-neutral Sigma version, authored here and never submitted upstream; the canonical copies live in this repository under the relevant `detections/` folders. Separately, two real contributions to SigmaHQ/sigma are tracked in the table above: #6243 is a native rule submission covering the same admin-initiated MFA/security-info-change technique as this repo's `admin-mfa-registration-for-user.md`, written directly against SigmaHQ's own schema rather than copied from here; #6247 is a two-line fix to an existing 2022 rule authored by Microsoft's identity team, found through this repo's own tenant validation work and later found to be wrong by the same method (see `evidence/`), not a rule authored in this repository. #6330 is a merged fix to a different rule.
+
+---
+
+## Evidence
+
+Findings measured against real events in a lab tenant, including the ones that corrected our own earlier work. Each file says what was measured, how, and what was wrong:
+
+- [`evidence/azure-sentinel-14311-federated-credential-wrong-operation.md`](evidence/azure-sentinel-14311-federated-credential-wrong-operation.md): our merged hunting query covered only one of two paths; fixed in Azure-Sentinel #15444.
+- [`evidence/sigma-6247-reversed-a-correct-dash.md`](evidence/sigma-6247-reversed-a-correct-dash.md): our own merged SigmaHQ fix made a rule worse; corrected by #6294 (open).
+- [`evidence/2026-10-26-reopened-the-6247-finding-nothing-done-in-6-weeks.md`](evidence/2026-10-26-reopened-the-6247-finding-nothing-done-in-6-weeks.md): status check on that finding.
+- [`evidence/2026-10-26-conflicting-claim-with-open-sigmahq-pr-6278.md`](evidence/2026-10-26-conflicting-claim-with-open-sigmahq-pr-6278.md): a reviewer was right and our first test was wrong.
+- [`evidence/sigma-gap-add-service-principal-credentials.md`](evidence/sigma-gap-add-service-principal-credentials.md): a coverage gap that an open PR already covered; our draft was withdrawn.
+- [`evidence/sigma-password-reset-word-order.md`](evidence/sigma-password-reset-word-order.md), [`evidence/CANDIDATES-not-confirmed.md`](evidence/CANDIDATES-not-confirmed.md): candidates and what is still not confirmed.
 
 ---
 
