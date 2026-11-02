@@ -2,7 +2,7 @@
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/descambiado/entra-id-detection-engineering?style=flat&color=blue)
 ![GitHub last commit](https://img.shields.io/github/last-commit/descambiado/entra-id-detection-engineering?style=flat)
-![Azure-Sentinel PRs merged](https://img.shields.io/badge/Azure--Sentinel%20PRs%20merged-21-brightgreen?style=flat)
+![Azure-Sentinel PRs merged](https://img.shields.io/badge/Azure--Sentinel%20PRs%20merged-22-brightgreen?style=flat)
 ![Elastic rules merged](https://img.shields.io/badge/Elastic%20rules%20merged-3-brightgreen?style=flat)
 ![Detections](https://img.shields.io/badge/detections-33-orange?style=flat)
 ![MITRE techniques](https://img.shields.io/badge/MITRE%20techniques-12-red?style=flat)
@@ -111,7 +111,7 @@ Every detection in this repo follows the same process:
 
 ## Contributions
 
-### Azure/Azure-Sentinel (21 PRs merged)
+### Azure/Azure-Sentinel (22 PRs merged)
 
 | PR | Description | Status |
 |----|-------------|--------|
@@ -136,6 +136,7 @@ Every detection in this repo follows the same process:
 | [#14948](https://github.com/Azure/Azure-Sentinel/pull/14948) | Break-glass account hunting pack: sign-in, credential/MFA change, role or group membership change (3 queries) | Merged August 24, 2026 |
 | [#15434](https://github.com/Azure/Azure-Sentinel/pull/15434) | Fix stale hyphen in the app-registration credential operation value (7 files) | Merged October 28, 2026 |
 | [#15444](https://github.com/Azure/Azure-Sentinel/pull/15444) | Fix federated identity credential hunting query: app registrations log `Update application` (corrects the partial coverage of #14311, see `evidence/`) | Merged October 28, 2026 |
+| [#15517](https://github.com/Azure/Azure-Sentinel/pull/15517) | Tenant policy changes hunting pack: authentication methods policy, default user permissions, device registration policy (3 queries) | Merged November 2, 2026 |
 
 ### elastic/detection-rules (3 rules and 1 fix merged, 2 in review)
 
